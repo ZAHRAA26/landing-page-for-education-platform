@@ -21,9 +21,9 @@ export const HeroSection = () => {
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6 animate-fade-up opacity-0 stagger-1 ligh leading-normal">
+            <h1 className=" text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.5] lg:leading-[1.5] text-foreground mb-6 animate-fade-up opacity-0 stagger-1">
               Unlock Your
-              <span className="text-gradient block">Learning Potential</span>
+              <span className="block text-gradient ">Learning Potential</span>
             </h1>
 
             {/* Subheadline */}
