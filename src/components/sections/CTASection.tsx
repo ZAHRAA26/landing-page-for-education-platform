@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -21,12 +22,14 @@ export const CTASection = () => {
               Join over 2 million learners worldwide and take the first step towards achieving your goals. Start learning for free today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="xl">
-                Get Started For Free
-                <ArrowRight className="w-5 h-5" />
+              <Button variant="hero" size="xl" asChild>
+                <Link to="/auth">
+                  Get Started For Free
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </Button>
-              <Button variant="heroOutline" size="xl">
-                Browse Courses
+              <Button variant="heroOutline" size="xl" asChild>
+                <Link to="/courses">Browse Courses</Link>
               </Button>
             </div>
             <p className="mt-6 text-sm text-muted-foreground">
