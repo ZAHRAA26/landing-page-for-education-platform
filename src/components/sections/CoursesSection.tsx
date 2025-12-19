@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Star, Clock, Users, ArrowRight } from "lucide-react";
 
@@ -73,9 +74,11 @@ export const CoursesSection = () => {
               Hand-picked courses by our experts to help you start your learning journey.
             </p>
           </div>
-          <Button variant="outline" size="lg" className="self-start lg:self-auto">
-            View All Courses
-            <ArrowRight className="w-4 h-4" />
+          <Button variant="outline" size="lg" className="self-start lg:self-auto" asChild>
+            <Link to="/courses">
+              View All Courses
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </Button>
         </div>
 
