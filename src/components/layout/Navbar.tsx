@@ -5,8 +5,8 @@ import { Menu, X, GraduationCap } from "lucide-react";
 
 const navLinks = [
   { label: "Courses", href: "/courses" },
-  { label: "Features", href: "/#features" },
-  { label: "Testimonials", href: "/#testimonials" },
+  { label: "About", href: "/about" },
+  { label: "Careers", href: "/careers" },
   { label: "Pricing", href: "/#pricing" },
 ];
 
