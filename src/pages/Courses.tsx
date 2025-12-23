@@ -274,7 +274,7 @@ const CourseCard = ({
   level,
 }: CourseCardProps) => (
   <Link 
-    to={`/course/${id}`}
+    to={`/courses/${id}`}
     className="group bg-card rounded-2xl border border-border/50 overflow-hidden shadow-soft hover:shadow-card hover:-translate-y-2 transition-all duration-300"
   >
     {/* Image */}
