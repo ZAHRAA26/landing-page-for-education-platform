@@ -7,7 +7,7 @@ const navLinks = [
   { label: "Courses", href: "/courses" },
   { label: "About", href: "/about" },
   { label: "Careers", href: "/careers" },
-  { label: "Pricing", href: "/#pricing" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const Navbar = () => {
