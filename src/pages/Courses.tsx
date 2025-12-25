@@ -127,18 +127,28 @@ const allCourses = [
 
 const categories = ["All", "Development", "Data Science", "Design", "Marketing", "IT & Security"];
 const levels = ["All Levels", "Beginner", "Intermediate", "Advanced"];
+const priceRanges = [
+  { label: "All Prices", min: 0, max: Infinity },
+  { label: "Under $50", min: 0, max: 49 },
+  { label: "$50 - $79", min: 50, max: 79 },
+  { label: "$80 - $99", min: 80, max: 99 },
+  { label: "$100+", min: 100, max: Infinity },
+];
 
 const Courses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedLevel, setSelectedLevel] = useState("All Levels");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("All Prices");
 
   const filteredCourses = allCourses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.instructor.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
     const matchesLevel = selectedLevel === "All Levels" || course.level === selectedLevel;
-    return matchesSearch && matchesCategory && matchesLevel;
+    const priceRange = priceRanges.find(p => p.label === selectedPriceRange);
+    const matchesPrice = priceRange ? course.price >= priceRange.min && course.price <= priceRange.max : true;
+    return matchesSearch && matchesCategory && matchesLevel && matchesPrice;
   });
 
   return (
@@ -205,10 +215,18 @@ const Courses = () => {
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               </div>
-              <Button variant="outline" size="default">
-                <Filter className="w-4 h-4 mr-2" />
-                More Filters
-              </Button>
+              <div className="relative">
+                <select
+                  value={selectedPriceRange}
+                  onChange={(e) => setSelectedPriceRange(e.target.value)}
+                  className="appearance-none bg-card border border-border rounded-lg px-4 py-2 pr-10 text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {priceRanges.map((range) => (
+                    <option key={range.label} value={range.label}>{range.label}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              </div>
             </div>
           </div>
 
@@ -231,6 +249,7 @@ const Courses = () => {
                 setSearchQuery("");
                 setSelectedCategory("All");
                 setSelectedLevel("All Levels");
+                setSelectedPriceRange("All Prices");
               }}>
                 Clear Filters
               </Button>
