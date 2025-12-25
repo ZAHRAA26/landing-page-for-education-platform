@@ -4,10 +4,10 @@ const footerLinks = {
   platform: {
     title: "Platform",
     links: [
-      { label: "Browse Courses", href: "#" },
-      { label: "Become an Instructor", href: "#" },
-      { label: "Enterprise Solutions", href: "#" },
-      { label: "Mobile App", href: "#" },
+      { label: "Browse Courses", href: "/courses" },
+      { label: "Become an Instructor", href: "/become-instructor" },
+      { label: "Enterprise Solutions", href: "/enterprise" },
+      { label: "Mobile App", href: "/mobile-app" },
     ],
   },
   company: {
@@ -15,17 +15,17 @@ const footerLinks = {
     links: [
       { label: "About Us", href: "/about" },
       { label: "Careers", href: "/careers" },
-      { label: "Press", href: "#" },
+      { label: "Press", href: "/press" },
       { label: "Blog", href: "/blog" },
     ],
   },
   support: {
     title: "Support",
     links: [
-      { label: "Help Center", href: "#" },
+      { label: "Help Center", href: "/help" },
       { label: "Contact Us", href: "/contact" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
     ],
   },
 };
@@ -97,13 +97,13 @@ export const Footer = () => {
             © {new Date().getFullYear()} EduLearn. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-background/60 hover:text-background transition-colors">
+            <a href="/privacy" className="text-background/60 hover:text-background transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="text-background/60 hover:text-background transition-colors">
+            <a href="/terms" className="text-background/60 hover:text-background transition-colors">
               Terms of Service
             </a>
-            <a href="#" className="text-background/60 hover:text-background transition-colors">
+            <a href="/cookies" className="text-background/60 hover:text-background transition-colors">
               Cookie Policy
             </a>
           </div>
