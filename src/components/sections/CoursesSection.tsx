@@ -94,6 +94,7 @@ export const CoursesSection = () => {
 };
 
 interface CourseCardProps {
+  id: number;
   title: string;
   category: string;
   instructor: string;
@@ -107,6 +108,7 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({
+  id,
   title,
   category,
   instructor,
@@ -118,7 +120,10 @@ const CourseCard = ({
   image,
   badge,
 }: CourseCardProps) => (
-  <div className="group bg-card rounded-2xl border border-border/50 overflow-hidden shadow-soft hover:shadow-card hover:-translate-y-2 transition-all duration-300">
+  <Link 
+    to={`/courses/${id}`}
+    className="group bg-card rounded-2xl border border-border/50 overflow-hidden shadow-soft hover:shadow-card hover:-translate-y-2 transition-all duration-300 block"
+  >
     {/* Image */}
     <div className={`relative aspect-[4/3] bg-gradient-to-br ${image}`}>
       {badge && (
@@ -167,5 +172,5 @@ const CourseCard = ({
         </Button>
       </div>
     </div>
-  </div>
+  </Link>
 );
