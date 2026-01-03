@@ -1,53 +1,56 @@
 import { BookOpen, Award, Users, Zap, Clock, Shield } from "lucide-react";
-
-const features = [
-  {
-    icon: BookOpen,
-    title: "Expert-Led Courses",
-    description: "Learn from industry professionals and thought leaders who bring real-world experience to every lesson.",
-  },
-  {
-    icon: Zap,
-    title: "Interactive Learning",
-    description: "Engage with hands-on projects, quizzes, and coding exercises that reinforce your knowledge.",
-  },
-  {
-    icon: Clock,
-    title: "Learn at Your Pace",
-    description: "Access courses anytime, anywhere. Our flexible platform adapts to your schedule and learning style.",
-  },
-  {
-    icon: Award,
-    title: "Earn Certificates",
-    description: "Showcase your achievements with industry-recognized certificates upon course completion.",
-  },
-  {
-    icon: Users,
-    title: "Community Support",
-    description: "Join a global community of learners. Collaborate, discuss, and grow together.",
-  },
-  {
-    icon: Shield,
-    title: "Lifetime Access",
-    description: "Purchase once, learn forever. Get lifetime access to all course materials and future updates.",
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const FeaturesSection = () => {
+  const { t } = useLanguage();
+
+  const features = [
+    {
+      icon: BookOpen,
+      title: t("features.expertCourses"),
+      description: t("features.expertCoursesDesc"),
+    },
+    {
+      icon: Zap,
+      title: t("features.interactive"),
+      description: t("features.interactiveDesc"),
+    },
+    {
+      icon: Clock,
+      title: t("features.pace"),
+      description: t("features.paceDesc"),
+    },
+    {
+      icon: Award,
+      title: t("features.certificates"),
+      description: t("features.certificatesDesc"),
+    },
+    {
+      icon: Users,
+      title: t("features.community"),
+      description: t("features.communityDesc"),
+    },
+    {
+      icon: Shield,
+      title: t("features.lifetime"),
+      description: t("features.lifetimeDesc"),
+    },
+  ];
+
   return (
     <section id="features" className="py-20 lg:py-28 bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            Why Choose Us
+            {t("features.badge")}
           </span>
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            Everything You Need to
-            <span className="text-gradient"> Succeed</span>
+            {t("features.title1")}
+            <span className="text-gradient">{t("features.title2")}</span>
           </h2>
           <p className="text-muted-foreground text-lg">
-            Our platform is designed with your success in mind, offering comprehensive tools and resources for effective learning.
+            {t("features.subtitle")}
           </p>
         </div>
 

@@ -1,44 +1,47 @@
 import { GraduationCap, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
-
-const footerLinks = {
-  platform: {
-    title: "Platform",
-    links: [
-      { label: "Browse Courses", href: "/courses" },
-      { label: "Become an Instructor", href: "/become-instructor" },
-      { label: "Enterprise Solutions", href: "/enterprise" },
-      { label: "Mobile App", href: "/mobile-app" },
-    ],
-  },
-  company: {
-    title: "Company",
-    links: [
-      { label: "About Us", href: "/about" },
-      { label: "Careers", href: "/careers" },
-      { label: "Press", href: "/press" },
-      { label: "Blog", href: "/blog" },
-    ],
-  },
-  support: {
-    title: "Support",
-    links: [
-      { label: "Help Center", href: "/help" },
-      { label: "Contact Us", href: "/contact" },
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
-    ],
-  },
-};
-
-const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Youtube, href: "#", label: "YouTube" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Footer = () => {
+  const { t } = useLanguage();
+
+  const footerLinks = {
+    platform: {
+      title: t("footer.platform"),
+      links: [
+        { label: t("footer.allCourses"), href: "/courses" },
+        { label: t("footer.becomeInstructor"), href: "/become-instructor" },
+        { label: t("footer.enterprise"), href: "/enterprise" },
+        { label: t("footer.mobileApp"), href: "/mobile-app" },
+      ],
+    },
+    company: {
+      title: t("footer.company"),
+      links: [
+        { label: t("footer.aboutUs"), href: "/about" },
+        { label: t("footer.careers"), href: "/careers" },
+        { label: t("footer.press"), href: "/press" },
+        { label: t("nav.blog"), href: "/blog" },
+      ],
+    },
+    support: {
+      title: t("footer.support"),
+      links: [
+        { label: t("footer.helpCenter"), href: "/help" },
+        { label: t("footer.contactUs"), href: "/contact" },
+        { label: t("footer.privacy"), href: "/privacy" },
+        { label: t("footer.terms"), href: "/terms" },
+      ],
+    },
+  };
+
+  const socialLinks = [
+    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Youtube, href: "#", label: "YouTube" },
+  ];
+
   return (
     <footer className="bg-foreground text-background py-16 lg:py-20">
       <div className="container mx-auto px-4">
@@ -54,7 +57,7 @@ export const Footer = () => {
               </span>
             </a>
             <p className="text-background/70 mb-6 max-w-sm">
-              Empowering millions of learners worldwide with quality education and skills for the future.
+              {t("footer.description")}
             </p>
             {/* Social Links */}
             <div className="flex gap-4">
@@ -94,17 +97,17 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="pt-8 border-t border-background/10 flex flex-col lg:flex-row justify-between items-center gap-4">
           <p className="text-background/60 text-sm">
-            © {new Date().getFullYear()} EduLearn. All rights reserved.
+            © {new Date().getFullYear()} EduLearn. {t("footer.rights")}
           </p>
           <div className="flex gap-6 text-sm">
             <a href="/privacy" className="text-background/60 hover:text-background transition-colors">
-              Privacy Policy
+              {t("footer.privacy")}
             </a>
             <a href="/terms" className="text-background/60 hover:text-background transition-colors">
-              Terms of Service
+              {t("footer.terms")}
             </a>
             <a href="/cookies" className="text-background/60 hover:text-background transition-colors">
-              Cookie Policy
+              {t("footer.cookies")}
             </a>
           </div>
         </div>
