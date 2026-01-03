@@ -2,18 +2,21 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, GraduationCap } from "lucide-react";
-
-const navLinks = [
-  { label: "Courses", href: "/courses" },
-  { label: "Blog", href: "/blog" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { label: t("nav.courses"), href: "/courses" },
+    { label: t("nav.blog"), href: "/blog" },
+    { label: t("nav.about"), href: "/about" },
+    { label: t("nav.contact"), href: "/contact" },
+  ];
 
   const getHref = (href: string) => {
     if (href.startsWith("/#") && isHomePage) {
@@ -43,7 +46,7 @@ export const Navbar = () => {
                 <Link
                   key={link.label}
                   to={link.href}
-                  className="text-muted-foreground hover:text-foreground font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
+                  className="text-muted-foreground hover:text-foreground font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:start-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
                 >
                   {link.label}
                 </Link>
@@ -51,7 +54,7 @@ export const Navbar = () => {
                 <a
                   key={link.label}
                   href={getHref(link.href)}
-                  className="text-muted-foreground hover:text-foreground font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
+                  className="text-muted-foreground hover:text-foreground font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:start-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
                 >
                   {link.label}
                 </a>
@@ -61,11 +64,12 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            <LanguageSwitcher />
             <Button variant="ghost" size="default" asChild>
-              <Link to="/auth">Log In</Link>
+              <Link to="/auth">{t("nav.login")}</Link>
             </Button>
             <Button variant="hero" size="default" asChild>
-              <Link to="/auth">Get Started Free</Link>
+              <Link to="/auth">{t("nav.getStarted")}</Link>
             </Button>
           </div>
 
@@ -105,11 +109,12 @@ export const Navbar = () => {
                 )
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
+                <LanguageSwitcher />
                 <Button variant="ghost" className="w-full justify-center" asChild>
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>Log In</Link>
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.login")}</Link>
                 </Button>
                 <Button variant="hero" className="w-full justify-center" asChild>
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>Get Started Free</Link>
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.getStarted")}</Link>
                 </Button>
               </div>
             </div>

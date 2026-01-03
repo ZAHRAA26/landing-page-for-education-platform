@@ -1,11 +1,15 @@
-const stats = [
-  { value: "2M+", label: "Active Students" },
-  { value: "500+", label: "Expert Courses" },
-  { value: "150+", label: "Countries" },
-  { value: "98%", label: "Success Rate" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const StatsSection = () => {
+  const { t } = useLanguage();
+
+  const stats = [
+    { value: "2M+", label: t("stats.students") },
+    { value: "500+", label: t("stats.courses") },
+    { value: "150+", label: t("stats.countries") },
+    { value: "98%", label: t("stats.success") },
+  ];
+
   return (
     <section className="py-16 lg:py-20 gradient-primary">
       <div className="container mx-auto px-4">
