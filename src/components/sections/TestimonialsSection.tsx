@@ -1,57 +1,60 @@
 import { Star, Quote } from "lucide-react";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Alex Thompson",
-    role: "Software Developer",
-    company: "Google",
-    content: "EduLearn completely transformed my career. The courses are comprehensive, well-structured, and the instructors are genuinely passionate about teaching.",
-    rating: 5,
-    avatar: "A",
-  },
-  {
-    id: 2,
-    name: "Maria Garcia",
-    role: "UX Designer",
-    company: "Spotify",
-    content: "I went from knowing nothing about design to landing my dream job. The hands-on projects and mentor feedback were invaluable.",
-    rating: 5,
-    avatar: "M",
-  },
-  {
-    id: 3,
-    name: "James Wilson",
-    role: "Data Analyst",
-    company: "Amazon",
-    content: "The data science curriculum here is top-notch. Real-world projects and industry-relevant skills helped me stand out in interviews.",
-    rating: 5,
-    avatar: "J",
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const TestimonialsSection = () => {
+  const { t } = useLanguage();
+
+  const testimonials = [
+    {
+      id: 1,
+      name: t("testimonials.name1"),
+      role: t("testimonials.role1"),
+      company: t("testimonials.company1"),
+      content: t("testimonials.content1"),
+      rating: 5,
+      avatar: t("testimonials.name1").charAt(0),
+    },
+    {
+      id: 2,
+      name: t("testimonials.name2"),
+      role: t("testimonials.role2"),
+      company: t("testimonials.company2"),
+      content: t("testimonials.content2"),
+      rating: 5,
+      avatar: t("testimonials.name2").charAt(0),
+    },
+    {
+      id: 3,
+      name: t("testimonials.name3"),
+      role: t("testimonials.role3"),
+      company: t("testimonials.company3"),
+      content: t("testimonials.content3"),
+      rating: 5,
+      avatar: t("testimonials.name3").charAt(0),
+    },
+  ];
+
   return (
     <section id="testimonials" className="py-20 lg:py-28 bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            Success Stories
+            {t("testimonials.badge")}
           </span>
           <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            What Our Students
-            <span className="text-gradient"> Say</span>
+            {t("testimonials.title1")}
+            <span className="text-gradient">{t("testimonials.title2")}</span>
           </h2>
           <p className="text-muted-foreground text-lg">
-            Join thousands of satisfied learners who have transformed their careers with our platform.
+            {t("testimonials.subtitle")}
           </p>
         </div>
 
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
           {testimonials.map((testimonial, index) => (
-            <TestimonialCard key={testimonial.id} {...testimonial} index={index} />
+            <TestimonialCard key={testimonial.id} {...testimonial} index={index} atLabel={t("testimonials.at")} />
           ))}
         </div>
       </div>
@@ -67,6 +70,7 @@ interface TestimonialCardProps {
   rating: number;
   avatar: string;
   index: number;
+  atLabel: string;
 }
 
 const TestimonialCard = ({
@@ -77,6 +81,7 @@ const TestimonialCard = ({
   rating,
   avatar,
   index,
+  atLabel,
 }: TestimonialCardProps) => (
   <div
     className="relative p-6 lg:p-8 bg-card rounded-2xl border border-border/50 shadow-soft hover:shadow-card transition-all duration-300"
@@ -105,7 +110,7 @@ const TestimonialCard = ({
       <div>
         <p className="font-semibold text-foreground">{name}</p>
         <p className="text-sm text-muted-foreground">
-          {role} at {company}
+          {role} {atLabel} {company}
         </p>
       </div>
     </div>
