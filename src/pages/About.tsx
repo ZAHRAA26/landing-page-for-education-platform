@@ -4,75 +4,85 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { Target, Eye, Heart, Users, Award, Globe, Linkedin, Twitter } from "lucide-react";
-
-const teamMembers = [
-  {
-    name: "Sarah Johnson",
-    role: "CEO & Founder",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop&crop=face",
-    bio: "Former Google engineer with 15+ years in EdTech",
-    linkedin: "#",
-    twitter: "#"
-  },
-  {
-    name: "Michael Chen",
-    role: "CTO",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
-    bio: "Ex-Amazon tech lead, passionate about scalable learning systems",
-    linkedin: "#",
-    twitter: "#"
-  },
-  {
-    name: "Emily Rodriguez",
-    role: "Head of Content",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
-    bio: "PhD in Education, designed curricula for top universities",
-    linkedin: "#",
-    twitter: "#"
-  },
-  {
-    name: "David Kim",
-    role: "Head of Product",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
-    bio: "Product veteran from Coursera and Udemy",
-    linkedin: "#",
-    twitter: "#"
-  }
-];
-
-const values = [
-  {
-    icon: Target,
-    title: "Excellence",
-    description: "We strive for the highest quality in everything we create, from course content to user experience."
-  },
-  {
-    icon: Heart,
-    title: "Passion",
-    description: "We're driven by a genuine love for education and helping others achieve their potential."
-  },
-  {
-    icon: Users,
-    title: "Community",
-    description: "We believe learning is better together and foster a supportive global community."
-  },
-  {
-    icon: Globe,
-    title: "Accessibility",
-    description: "Education should be available to everyone, regardless of location or background."
-  }
-];
-
-const milestones = [
-  { year: "2019", event: "Founded with a vision to democratize education" },
-  { year: "2020", event: "Launched first 50 courses, reached 10,000 students" },
-  { year: "2021", event: "Expanded to 200+ courses, partnered with industry leaders" },
-  { year: "2022", event: "Reached 100,000 students across 150 countries" },
-  { year: "2023", event: "Introduced AI-powered learning paths" },
-  { year: "2024", event: "500,000+ students, recognized as top EdTech platform" }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const About = () => {
+  const { t, isRTL } = useLanguage();
+
+  const teamMembers = [
+    {
+      name: isRTL ? "سارة جونسون" : "Sarah Johnson",
+      role: isRTL ? "الرئيس التنفيذي والمؤسس" : "CEO & Founder",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop&crop=face",
+      bio: isRTL ? "مهندسة سابقة في Google مع 15+ سنة في تكنولوجيا التعليم" : "Former Google engineer with 15+ years in EdTech",
+      linkedin: "#",
+      twitter: "#"
+    },
+    {
+      name: isRTL ? "مايكل تشين" : "Michael Chen",
+      role: isRTL ? "المدير التقني" : "CTO",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+      bio: isRTL ? "قائد تقني سابق في Amazon، شغوف بأنظمة التعلم القابلة للتوسع" : "Ex-Amazon tech lead, passionate about scalable learning systems",
+      linkedin: "#",
+      twitter: "#"
+    },
+    {
+      name: isRTL ? "إيميلي رودريغيز" : "Emily Rodriguez",
+      role: isRTL ? "رئيس المحتوى" : "Head of Content",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face",
+      bio: isRTL ? "دكتوراه في التعليم، صممت مناهج لأفضل الجامعات" : "PhD in Education, designed curricula for top universities",
+      linkedin: "#",
+      twitter: "#"
+    },
+    {
+      name: isRTL ? "ديفيد كيم" : "David Kim",
+      role: isRTL ? "رئيس المنتجات" : "Head of Product",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face",
+      bio: isRTL ? "خبير منتجات من Coursera و Udemy" : "Product veteran from Coursera and Udemy",
+      linkedin: "#",
+      twitter: "#"
+    }
+  ];
+
+  const values = [
+    {
+      icon: Target,
+      title: t("about.excellence"),
+      description: t("about.excellenceDesc"),
+    },
+    {
+      icon: Heart,
+      title: t("about.passion"),
+      description: t("about.passionDesc"),
+    },
+    {
+      icon: Users,
+      title: t("about.community"),
+      description: t("about.communityDesc"),
+    },
+    {
+      icon: Globe,
+      title: t("about.accessibility"),
+      description: t("about.accessibilityDesc"),
+    }
+  ];
+
+  const milestones = isRTL ? [
+    { year: "2019", event: "تأسست برؤية لإتاحة التعليم للجميع" },
+    { year: "2020", event: "أطلقنا أول 50 دورة، وصلنا إلى 10,000 طالب" },
+    { year: "2021", event: "توسعنا إلى 200+ دورة، شراكات مع قادة الصناعة" },
+    { year: "2022", event: "وصلنا إلى 100,000 طالب في 150 دولة" },
+    { year: "2023", event: "قدمنا مسارات تعلم مدعومة بالذكاء الاصطناعي" },
+    { year: "2024", event: "500,000+ طالب، معترف بنا كأفضل منصة تعليم تقني" }
+  ] : [
+    { year: "2019", event: "Founded with a vision to democratize education" },
+    { year: "2020", event: "Launched first 50 courses, reached 10,000 students" },
+    { year: "2021", event: "Expanded to 200+ courses, partnered with industry leaders" },
+    { year: "2022", event: "Reached 100,000 students across 150 countries" },
+    { year: "2023", event: "Introduced AI-powered learning paths" },
+    { year: "2024", event: "500,000+ students, recognized as top EdTech platform" }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -81,11 +91,10 @@ const About = () => {
       <section className="pt-32 pb-20 px-4 gradient-hero">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 animate-fade-up">
-            Transforming Lives Through <span className="text-gradient">Education</span>
+            {t("about.heroTitle1")} <span className="text-gradient">{t("about.heroTitle2")}</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 animate-fade-up stagger-1">
-            We're on a mission to make world-class education accessible to everyone, 
-            everywhere. Join us in shaping the future of learning.
+            {t("about.heroSubtitle")}
           </p>
         </div>
       </section>
@@ -98,11 +107,9 @@ const About = () => {
               <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mb-6">
                 <Target className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">Our Mission</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-4">{t("about.ourMission")}</h2>
               <p className="text-muted-foreground leading-relaxed">
-                To empower individuals worldwide with the skills and knowledge they need 
-                to thrive in the digital age. We believe that quality education should 
-                not be a privilege but a right accessible to all.
+                {t("about.missionText")}
               </p>
             </CardContent>
           </Card>
@@ -112,11 +119,9 @@ const About = () => {
               <div className="w-16 h-16 rounded-2xl gradient-accent flex items-center justify-center mb-6">
                 <Eye className="w-8 h-8 text-accent-foreground" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">Our Vision</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-4">{t("about.ourVision")}</h2>
               <p className="text-muted-foreground leading-relaxed">
-                To become the world's most trusted and innovative learning platform, 
-                where anyone can acquire new skills, advance their careers, and 
-                unlock their full potential through transformative education.
+                {t("about.visionText")}
               </p>
             </CardContent>
           </Card>
@@ -127,9 +132,9 @@ const About = () => {
       <section className="py-20 px-4 bg-muted/30">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Our Core Values</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t("about.coreValues")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              These principles guide everything we do and shape our culture
+              {t("about.valuesSubtitle")}
             </p>
           </div>
           
@@ -153,9 +158,9 @@ const About = () => {
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Meet Our Team</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t("about.meetTeam")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Passionate educators and technologists working together to revolutionize learning
+              {t("about.teamSubtitle")}
             </p>
           </div>
           
@@ -194,8 +199,8 @@ const About = () => {
       <section className="py-20 px-4 bg-muted/30">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Our Journey</h2>
-            <p className="text-muted-foreground">From a small idea to a global platform</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t("about.ourJourney")}</h2>
+            <p className="text-muted-foreground">{t("about.journeySubtitle")}</p>
           </div>
           
           <div className="relative">
@@ -203,7 +208,7 @@ const About = () => {
             
             {milestones.map((milestone, index) => (
               <div key={index} className={`flex items-center mb-8 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
-                <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
+                <div className={`w-1/2 ${index % 2 === 0 ? (isRTL ? 'pl-8 text-left' : 'pr-8 text-right') : (isRTL ? 'pr-8 text-right' : 'pl-8 text-left')}`}>
                   <Card className="border-none shadow-soft bg-card inline-block">
                     <CardContent className="p-4">
                       <span className="text-primary font-bold">{milestone.year}</span>
@@ -224,10 +229,10 @@ const About = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { value: "500K+", label: "Students Worldwide" },
-              { value: "1,000+", label: "Expert Instructors" },
-              { value: "5,000+", label: "Courses Available" },
-              { value: "150+", label: "Countries Reached" }
+              { value: "500K+", label: t("about.studentsWorldwide") },
+              { value: "1,000+", label: t("about.expertInstructors") },
+              { value: "5,000+", label: t("about.coursesAvailable") },
+              { value: "150+", label: t("about.countriesReached") }
             ].map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-4xl md:text-5xl font-bold text-gradient mb-2">{stat.value}</div>
@@ -242,13 +247,12 @@ const About = () => {
       <section className="py-20 px-4 gradient-hero">
         <div className="max-w-4xl mx-auto text-center">
           <Award className="w-16 h-16 text-primary mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Join Our Growing Team</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{t("about.joinTeam")}</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            We're always looking for passionate individuals to help us transform education. 
-            Check out our open positions and be part of something meaningful.
+            {t("about.joinTeamDesc")}
           </p>
           <Button asChild variant="hero" size="xl">
-            <Link to="/careers">View Open Positions</Link>
+            <Link to="/careers">{t("about.viewPositions")}</Link>
           </Button>
         </div>
       </section>
