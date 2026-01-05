@@ -8,6 +8,7 @@ import {
   Award, 
   Play,
   ChevronRight,
+  ChevronLeft,
   Bell,
   Settings,
   LogOut,
@@ -15,47 +16,82 @@ import {
   TrendingUp,
   Calendar
 } from "lucide-react";
-
-const enrolledCourses = [
-  {
-    id: 1,
-    title: "Complete Web Development Bootcamp",
-    instructor: "Sarah Johnson",
-    progress: 65,
-    nextLesson: "CSS Flexbox & Grid",
-    image: "from-primary/30 to-accent/20",
-  },
-  {
-    id: 2,
-    title: "React & Next.js Advanced Course",
-    instructor: "Alex Thompson",
-    progress: 32,
-    nextLesson: "Server Components",
-    image: "from-accent/30 to-primary/20",
-  },
-  {
-    id: 3,
-    title: "UI/UX Design Masterclass",
-    instructor: "Emma Williams",
-    progress: 89,
-    nextLesson: "Final Project",
-    image: "from-primary/20 to-accent/30",
-  },
-];
-
-const achievements = [
-  { icon: "🎯", title: "First Course", description: "Enrolled in your first course" },
-  { icon: "📚", title: "Bookworm", description: "Completed 5 lessons in one day" },
-  { icon: "⭐", title: "Rising Star", description: "Earned your first certificate" },
-];
-
-const upcomingDeadlines = [
-  { course: "Web Development", task: "JavaScript Quiz", date: "Dec 22" },
-  { course: "UI/UX Design", task: "Final Project", date: "Dec 28" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"student" | "admin">("student");
+  const { t, isRTL, language } = useLanguage();
+
+  const enrolledCourses = [
+    {
+      id: 1,
+      title: language === "ar" ? "معسكر تطوير الويب الكامل" : "Complete Web Development Bootcamp",
+      instructor: language === "ar" ? "سارة جونسون" : "Sarah Johnson",
+      progress: 65,
+      nextLesson: language === "ar" ? "CSS Flexbox و Grid" : "CSS Flexbox & Grid",
+      image: "from-primary/30 to-accent/20",
+    },
+    {
+      id: 2,
+      title: language === "ar" ? "دورة React و Next.js المتقدمة" : "React & Next.js Advanced Course",
+      instructor: language === "ar" ? "أليكس طومسون" : "Alex Thompson",
+      progress: 32,
+      nextLesson: language === "ar" ? "مكونات الخادم" : "Server Components",
+      image: "from-accent/30 to-primary/20",
+    },
+    {
+      id: 3,
+      title: language === "ar" ? "دورة UI/UX التصميم الشاملة" : "UI/UX Design Masterclass",
+      instructor: language === "ar" ? "إيما ويليامز" : "Emma Williams",
+      progress: 89,
+      nextLesson: language === "ar" ? "المشروع النهائي" : "Final Project",
+      image: "from-primary/20 to-accent/30",
+    },
+  ];
+
+  const achievements = [
+    { icon: "🎯", title: t("dashboard.firstCourse"), description: t("dashboard.firstCourseDesc") },
+    { icon: "📚", title: t("dashboard.bookworm"), description: t("dashboard.bookwormDesc") },
+    { icon: "⭐", title: t("dashboard.risingStar"), description: t("dashboard.risingStarDesc") },
+  ];
+
+  const upcomingDeadlines = [
+    { 
+      course: language === "ar" ? "تطوير الويب" : "Web Development", 
+      task: language === "ar" ? "اختبار JavaScript" : "JavaScript Quiz", 
+      date: language === "ar" ? "22 ديسمبر" : "Dec 22" 
+    },
+    { 
+      course: language === "ar" ? "تصميم UI/UX" : "UI/UX Design", 
+      task: language === "ar" ? "المشروع النهائي" : "Final Project", 
+      date: language === "ar" ? "28 ديسمبر" : "Dec 28" 
+    },
+  ];
+
+  const recentActivity = [
+    {
+      action: language === "ar" ? "تسجيل جديد" : "New enrollment",
+      detail: language === "ar" ? "سجل أحمد في 'معسكر تطوير الويب'" : "John Doe enrolled in 'Web Development Bootcamp'",
+      time: language === "ar" ? "منذ دقيقتين" : "2 min ago"
+    },
+    {
+      action: language === "ar" ? "إكمال دورة" : "Course completed",
+      detail: language === "ar" ? "أكملت سارة دورة 'UI/UX التصميم الشاملة'" : "Sarah Smith completed 'UI/UX Design Masterclass'",
+      time: language === "ar" ? "منذ 15 دقيقة" : "15 min ago"
+    },
+    {
+      action: language === "ar" ? "تقييم جديد" : "New review",
+      detail: language === "ar" ? "تقييم 5 نجوم على 'دورة React المتقدمة'" : "5-star review on 'React Advanced Course'",
+      time: language === "ar" ? "منذ ساعة" : "1 hour ago"
+    },
+    {
+      action: language === "ar" ? "شهادة صادرة" : "Certificate issued",
+      detail: language === "ar" ? "تم إصدار شهادة لمحمد أحمد" : "Certificate issued to Mike Johnson",
+      time: language === "ar" ? "منذ ساعتين" : "2 hours ago"
+    }
+  ];
+
+  const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,7 +117,7 @@ const Dashboard = () => {
                 <Settings className="w-5 h-5" />
               </Link>
               <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold">
-                J
+                {language === "ar" ? "أ" : "J"}
               </div>
             </div>
           </div>
@@ -90,7 +126,7 @@ const Dashboard = () => {
 
       <div className="pt-16 flex">
         {/* Sidebar */}
-        <aside className="fixed left-0 top-16 bottom-0 w-64 bg-card border-r border-border/50 p-4 hidden lg:block">
+        <aside className={`fixed ${isRTL ? 'right-0' : 'left-0'} top-16 bottom-0 w-64 bg-card border-${isRTL ? 'l' : 'r'} border-border/50 p-4 hidden lg:block`}>
           <nav className="space-y-2">
             {/* Role Toggle */}
             <div className="bg-secondary rounded-lg p-1 mb-6">
@@ -103,7 +139,7 @@ const Dashboard = () => {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Student
+                  {t("dashboard.student")}
                 </button>
                 <button
                   onClick={() => setActiveTab("admin")}
@@ -113,16 +149,16 @@ const Dashboard = () => {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Admin
+                  {t("dashboard.admin")}
                 </button>
               </div>
             </div>
 
-            <SidebarLink icon={<BookOpen />} label="My Courses" active />
-            <SidebarLink icon={<TrendingUp />} label="Progress" />
-            <SidebarLink icon={<Award />} label="Certificates" />
-            <SidebarLink icon={<Calendar />} label="Schedule" />
-            <SidebarLink icon={<User />} label="Profile" />
+            <SidebarLink icon={<BookOpen />} label={t("dashboard.myCourses")} active />
+            <SidebarLink icon={<TrendingUp />} label={t("dashboard.progress")} />
+            <SidebarLink icon={<Award />} label={t("dashboard.certificates")} />
+            <SidebarLink icon={<Calendar />} label={t("dashboard.schedule")} />
+            <SidebarLink icon={<User />} label={t("dashboard.profile")} />
             
             <div className="pt-4 border-t border-border mt-4">
               <Link 
@@ -130,18 +166,28 @@ const Dashboard = () => {
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
               >
                 <LogOut className="w-5 h-5" />
-                <span className="font-medium">Logout</span>
+                <span className="font-medium">{t("dashboard.logout")}</span>
               </Link>
             </div>
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 lg:ml-64 p-6 lg:p-8">
+        <main className={`flex-1 ${isRTL ? 'lg:mr-64' : 'lg:ml-64'} p-6 lg:p-8`}>
           {activeTab === "student" ? (
-            <StudentDashboard />
+            <StudentDashboard 
+              t={t} 
+              isRTL={isRTL} 
+              enrolledCourses={enrolledCourses}
+              achievements={achievements}
+              upcomingDeadlines={upcomingDeadlines}
+              ChevronIcon={ChevronIcon}
+            />
           ) : (
-            <AdminDashboard />
+            <AdminDashboard 
+              t={t} 
+              recentActivity={recentActivity}
+            />
           )}
         </main>
       </div>
@@ -163,37 +209,61 @@ const SidebarLink = ({ icon, label, active }: { icon: React.ReactNode; label: st
   </a>
 );
 
-const StudentDashboard = () => (
+interface StudentDashboardProps {
+  t: (key: string) => string;
+  isRTL: boolean;
+  enrolledCourses: Array<{
+    id: number;
+    title: string;
+    instructor: string;
+    progress: number;
+    nextLesson: string;
+    image: string;
+  }>;
+  achievements: Array<{
+    icon: string;
+    title: string;
+    description: string;
+  }>;
+  upcomingDeadlines: Array<{
+    course: string;
+    task: string;
+    date: string;
+  }>;
+  ChevronIcon: React.ComponentType<{ className?: string }>;
+}
+
+const StudentDashboard = ({ t, isRTL, enrolledCourses, achievements, upcomingDeadlines, ChevronIcon }: StudentDashboardProps) => (
   <>
     {/* Welcome */}
     <div className="mb-8">
       <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
-        Welcome back, John! 👋
+        {t("dashboard.welcomeBack")}
       </h1>
       <p className="text-muted-foreground">
-        Continue your learning journey. You're making great progress!
+        {t("dashboard.continueJourney")}
       </p>
     </div>
 
     {/* Stats */}
     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <StatCard icon={<BookOpen />} value="3" label="Enrolled Courses" color="primary" />
-      <StatCard icon={<Clock />} value="24h" label="Hours Learned" color="accent" />
-      <StatCard icon={<Award />} value="2" label="Certificates" color="primary" />
-      <StatCard icon={<TrendingUp />} value="62%" label="Avg. Progress" color="accent" />
+      <StatCard icon={<BookOpen />} value="3" label={t("dashboard.enrolledCourses")} color="primary" />
+      <StatCard icon={<Clock />} value="24h" label={t("dashboard.hoursLearned")} color="accent" />
+      <StatCard icon={<Award />} value="2" label={t("dashboard.certificates")} color="primary" />
+      <StatCard icon={<TrendingUp />} value="62%" label={t("dashboard.avgProgress")} color="accent" />
     </div>
 
     {/* Continue Learning */}
     <section className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-foreground">Continue Learning</h2>
+        <h2 className="text-xl font-bold text-foreground">{t("dashboard.continueLearning")}</h2>
         <Link to="/courses" className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
-          View All <ChevronRight className="w-4 h-4" />
+          {t("dashboard.viewAll")} <ChevronIcon className="w-4 h-4" />
         </Link>
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {enrolledCourses.map((course) => (
-          <EnrolledCourseCard key={course.id} {...course} />
+          <EnrolledCourseCard key={course.id} {...course} t={t} />
         ))}
       </div>
     </section>
@@ -201,7 +271,7 @@ const StudentDashboard = () => (
     <div className="grid lg:grid-cols-2 gap-6">
       {/* Achievements */}
       <section className="bg-card rounded-2xl border border-border/50 p-6">
-        <h2 className="text-lg font-bold text-foreground mb-4">Recent Achievements</h2>
+        <h2 className="text-lg font-bold text-foreground mb-4">{t("dashboard.recentAchievements")}</h2>
         <div className="space-y-3">
           {achievements.map((achievement, index) => (
             <div key={index} className="flex items-center gap-4 p-3 bg-secondary/50 rounded-xl">
@@ -217,7 +287,7 @@ const StudentDashboard = () => (
 
       {/* Upcoming Deadlines */}
       <section className="bg-card rounded-2xl border border-border/50 p-6">
-        <h2 className="text-lg font-bold text-foreground mb-4">Upcoming Deadlines</h2>
+        <h2 className="text-lg font-bold text-foreground mb-4">{t("dashboard.upcomingDeadlines")}</h2>
         <div className="space-y-3">
           {upcomingDeadlines.map((deadline, index) => (
             <div key={index} className="flex items-center justify-between p-3 bg-secondary/50 rounded-xl">
@@ -234,73 +304,70 @@ const StudentDashboard = () => (
   </>
 );
 
-const AdminDashboard = () => (
+interface AdminDashboardProps {
+  t: (key: string) => string;
+  recentActivity: Array<{
+    action: string;
+    detail: string;
+    time: string;
+  }>;
+}
+
+const AdminDashboard = ({ t, recentActivity }: AdminDashboardProps) => (
   <>
     {/* Welcome */}
     <div className="mb-8">
       <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
-        Admin Dashboard 🎛️
+        {t("dashboard.adminDashboard")}
       </h1>
       <p className="text-muted-foreground">
-        Manage courses, students, and platform analytics.
+        {t("dashboard.manageDescription")}
       </p>
     </div>
 
     {/* Stats */}
     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <StatCard icon={<User />} value="12,458" label="Total Students" color="primary" />
-      <StatCard icon={<BookOpen />} value="156" label="Total Courses" color="accent" />
-      <StatCard icon={<TrendingUp />} value="$45.2k" label="Revenue" color="primary" />
-      <StatCard icon={<Award />} value="892" label="Certificates Issued" color="accent" />
+      <StatCard icon={<User />} value="12,458" label={t("dashboard.totalStudents")} color="primary" />
+      <StatCard icon={<BookOpen />} value="156" label={t("dashboard.totalCourses")} color="accent" />
+      <StatCard icon={<TrendingUp />} value="$45.2k" label={t("dashboard.revenue")} color="primary" />
+      <StatCard icon={<Award />} value="892" label={t("dashboard.certificatesIssued")} color="accent" />
     </div>
 
     {/* Quick Actions */}
     <section className="mb-8">
-      <h2 className="text-xl font-bold text-foreground mb-4">Quick Actions</h2>
+      <h2 className="text-xl font-bold text-foreground mb-4">{t("dashboard.quickActions")}</h2>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
           <BookOpen className="w-6 h-6 text-primary" />
-          <span>Add New Course</span>
+          <span>{t("dashboard.addNewCourse")}</span>
         </Button>
         <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
           <User className="w-6 h-6 text-primary" />
-          <span>Manage Users</span>
+          <span>{t("dashboard.manageUsers")}</span>
         </Button>
         <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
           <TrendingUp className="w-6 h-6 text-primary" />
-          <span>View Analytics</span>
+          <span>{t("dashboard.viewAnalytics")}</span>
         </Button>
         <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
           <Settings className="w-6 h-6 text-primary" />
-          <span>Settings</span>
+          <span>{t("dashboard.settings")}</span>
         </Button>
       </div>
     </section>
 
     {/* Recent Activity */}
     <section className="bg-card rounded-2xl border border-border/50 p-6">
-      <h2 className="text-lg font-bold text-foreground mb-4">Recent Activity</h2>
+      <h2 className="text-lg font-bold text-foreground mb-4">{t("dashboard.recentActivity")}</h2>
       <div className="space-y-4">
-        <ActivityItem 
-          action="New enrollment" 
-          detail="John Doe enrolled in 'Web Development Bootcamp'"
-          time="2 min ago"
-        />
-        <ActivityItem 
-          action="Course completed" 
-          detail="Sarah Smith completed 'UI/UX Design Masterclass'"
-          time="15 min ago"
-        />
-        <ActivityItem 
-          action="New review" 
-          detail="5-star review on 'React Advanced Course'"
-          time="1 hour ago"
-        />
-        <ActivityItem 
-          action="Certificate issued" 
-          detail="Certificate issued to Mike Johnson"
-          time="2 hours ago"
-        />
+        {recentActivity.map((item, index) => (
+          <ActivityItem 
+            key={index}
+            action={item.action} 
+            detail={item.detail}
+            time={item.time}
+          />
+        ))}
       </div>
     </section>
   </>
@@ -332,7 +399,8 @@ const EnrolledCourseCard = ({
   instructor, 
   progress, 
   nextLesson, 
-  image 
+  image,
+  t
 }: {
   id: number;
   title: string;
@@ -340,17 +408,18 @@ const EnrolledCourseCard = ({
   progress: number;
   nextLesson: string;
   image: string;
+  t: (key: string) => string;
 }) => (
   <div className="bg-card rounded-2xl border border-border/50 overflow-hidden shadow-soft hover:shadow-card transition-all">
     <div className={`aspect-[3/1] bg-gradient-to-br ${image}`} />
     <div className="p-4">
       <h3 className="font-bold text-foreground mb-1 line-clamp-1">{title}</h3>
-      <p className="text-sm text-muted-foreground mb-3">by {instructor}</p>
+      <p className="text-sm text-muted-foreground mb-3">{t("dashboard.by")} {instructor}</p>
       
       {/* Progress Bar */}
       <div className="mb-3">
         <div className="flex justify-between text-sm mb-1">
-          <span className="text-muted-foreground">Progress</span>
+          <span className="text-muted-foreground">{t("dashboard.progress")}</span>
           <span className="font-medium text-foreground">{progress}%</span>
         </div>
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -363,11 +432,11 @@ const EnrolledCourseCard = ({
 
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          Next: <span className="text-foreground">{nextLesson}</span>
+          {t("dashboard.next")} <span className="text-foreground">{nextLesson}</span>
         </p>
         <Button size="sm" variant="hero">
           <Play className="w-4 h-4" />
-          Continue
+          {t("dashboard.continue")}
         </Button>
       </div>
     </div>
