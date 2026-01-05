@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +15,7 @@ import {
   Award, 
   CheckCircle2,
   ArrowLeft,
+  ArrowRight,
   Heart,
   Share2,
   PlayCircle,
@@ -23,158 +24,187 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-
-// Mock course data
-const courseData = {
-  id: "1",
-  title: "Complete Web Development Bootcamp 2024",
-  description: "Master HTML, CSS, JavaScript, React, Node.js, and MongoDB. Build real-world projects and become a full-stack developer ready for the job market.",
-  instructor: {
-    name: "Dr. Sarah Mitchell",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-    title: "Senior Software Engineer",
-    bio: "Dr. Sarah Mitchell is a seasoned software engineer with over 15 years of experience in web development. She has worked at top tech companies including Google and Meta, and has taught over 500,000 students worldwide. Her teaching methodology focuses on practical, hands-on learning that prepares students for real-world challenges.",
-    courses: 12,
-    students: 150000,
-    rating: 4.9
-  },
-  price: 89.99,
-  originalPrice: 199.99,
-  rating: 4.8,
-  totalRatings: 12847,
-  students: 45230,
-  duration: "42 hours",
-  lectures: 320,
-  level: "All Levels",
-  language: "English",
-  lastUpdated: "December 2024",
-  thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800",
-  videoPreview: "https://www.w3schools.com/html/mov_bbb.mp4",
-  features: [
-    "42 hours of on-demand video",
-    "320 lectures covering all topics",
-    "15 real-world projects",
-    "Downloadable resources",
-    "Certificate of completion",
-    "Lifetime access",
-    "Mobile and TV access",
-    "30-day money-back guarantee"
-  ],
-  requirements: [
-    "No programming experience needed",
-    "A computer with internet access",
-    "Desire to learn and build projects"
-  ],
-  curriculum: [
-    {
-      title: "Introduction to Web Development",
-      duration: "2h 30m",
-      lectures: [
-        { title: "Welcome to the Course", duration: "5:00", type: "video", free: true },
-        { title: "How the Internet Works", duration: "15:00", type: "video", free: true },
-        { title: "Setting Up Your Development Environment", duration: "20:00", type: "video", free: false },
-        { title: "Course Resources", duration: "2:00", type: "resource", free: true }
-      ]
-    },
-    {
-      title: "HTML Fundamentals",
-      duration: "4h 15m",
-      lectures: [
-        { title: "What is HTML?", duration: "10:00", type: "video", free: false },
-        { title: "HTML Document Structure", duration: "18:00", type: "video", free: false },
-        { title: "Working with Text Elements", duration: "25:00", type: "video", free: false },
-        { title: "Links and Images", duration: "30:00", type: "video", free: false },
-        { title: "HTML Practice Project", duration: "45:00", type: "video", free: false }
-      ]
-    },
-    {
-      title: "CSS Styling",
-      duration: "6h 45m",
-      lectures: [
-        { title: "Introduction to CSS", duration: "12:00", type: "video", free: false },
-        { title: "Selectors and Properties", duration: "28:00", type: "video", free: false },
-        { title: "Box Model Deep Dive", duration: "35:00", type: "video", free: false },
-        { title: "Flexbox Layout", duration: "45:00", type: "video", free: false },
-        { title: "CSS Grid Mastery", duration: "50:00", type: "video", free: false },
-        { title: "Responsive Design", duration: "40:00", type: "video", free: false }
-      ]
-    },
-    {
-      title: "JavaScript Essentials",
-      duration: "8h 20m",
-      lectures: [
-        { title: "JavaScript Basics", duration: "20:00", type: "video", free: false },
-        { title: "Variables and Data Types", duration: "30:00", type: "video", free: false },
-        { title: "Functions and Scope", duration: "45:00", type: "video", free: false },
-        { title: "DOM Manipulation", duration: "55:00", type: "video", free: false },
-        { title: "Event Handling", duration: "40:00", type: "video", free: false },
-        { title: "Async JavaScript", duration: "60:00", type: "video", free: false }
-      ]
-    },
-    {
-      title: "React Framework",
-      duration: "10h 30m",
-      lectures: [
-        { title: "React Introduction", duration: "15:00", type: "video", free: false },
-        { title: "Components and Props", duration: "40:00", type: "video", free: false },
-        { title: "State Management", duration: "55:00", type: "video", free: false },
-        { title: "Hooks Deep Dive", duration: "70:00", type: "video", free: false },
-        { title: "Building a Complete App", duration: "120:00", type: "video", free: false }
-      ]
-    }
-  ],
-  reviews: [
-    {
-      id: 1,
-      user: "Michael Chen",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
-      rating: 5,
-      date: "2 weeks ago",
-      comment: "This course completely transformed my career! I went from knowing nothing about coding to landing a junior developer position within 6 months. Sarah's teaching style is incredibly clear and engaging."
-    },
-    {
-      id: 2,
-      user: "Emily Rodriguez",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
-      rating: 5,
-      date: "1 month ago",
-      comment: "Best investment I've ever made in my education. The projects are practical and relevant, and the community support is amazing. Highly recommend to anyone wanting to break into tech."
-    },
-    {
-      id: 3,
-      user: "James Wilson",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
-      rating: 4,
-      date: "1 month ago",
-      comment: "Great comprehensive course covering all the essentials. Some sections could be more in-depth, but overall an excellent starting point for web development."
-    },
-    {
-      id: 4,
-      user: "Priya Sharma",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
-      rating: 5,
-      date: "2 months ago",
-      comment: "The curriculum is well-structured and up-to-date with the latest industry practices. The React section alone is worth the price of the entire course!"
-    }
-  ]
-};
-
-const ratingDistribution = [
-  { stars: 5, percentage: 78 },
-  { stars: 4, percentage: 15 },
-  { stars: 3, percentage: 5 },
-  { stars: 2, percentage: 1 },
-  { stars: 1, percentage: 1 }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const CourseDetail = () => {
   const { id } = useParams();
   const [isPlaying, setIsPlaying] = useState(false);
+  const { t, isRTL, language } = useLanguage();
+
+  // Mock course data with translations
+  const courseData = {
+    id: "1",
+    title: language === "ar" 
+      ? "معسكر تطوير الويب الكامل 2024" 
+      : "Complete Web Development Bootcamp 2024",
+    description: language === "ar"
+      ? "أتقن HTML و CSS و JavaScript و React و Node.js و MongoDB. ابنِ مشاريع حقيقية وكن مطور full-stack جاهزاً لسوق العمل."
+      : "Master HTML, CSS, JavaScript, React, Node.js, and MongoDB. Build real-world projects and become a full-stack developer ready for the job market.",
+    instructor: {
+      name: language === "ar" ? "د. سارة ميتشل" : "Dr. Sarah Mitchell",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      title: language === "ar" ? "مهندسة برمجيات أولى" : "Senior Software Engineer",
+      bio: language === "ar" 
+        ? "د. سارة ميتشل مهندسة برمجيات خبيرة لديها أكثر من 15 عاماً من الخبرة في تطوير الويب. عملت في شركات تقنية كبرى مثل Google و Meta، وقد درّست أكثر من 500,000 طالب حول العالم."
+        : "Dr. Sarah Mitchell is a seasoned software engineer with over 15 years of experience in web development. She has worked at top tech companies including Google and Meta, and has taught over 500,000 students worldwide.",
+      courses: 12,
+      students: 150000,
+      rating: 4.9
+    },
+    price: 89.99,
+    originalPrice: 199.99,
+    rating: 4.8,
+    totalRatings: 12847,
+    students: 45230,
+    duration: language === "ar" ? "42 ساعة" : "42 hours",
+    lectures: 320,
+    level: language === "ar" ? "جميع المستويات" : "All Levels",
+    language: language === "ar" ? "الإنجليزية" : "English",
+    lastUpdated: language === "ar" ? "ديسمبر 2024" : "December 2024",
+    thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800",
+    videoPreview: "https://www.w3schools.com/html/mov_bbb.mp4",
+    features: [
+      t("courseDetail.hoursOnDemand").replace("hours", "42"),
+      t("courseDetail.lecturesCovering").replace("lectures", "320"),
+      "15 " + t("courseDetail.realWorldProjects"),
+      t("courseDetail.downloadableResources"),
+      t("courseDetail.certificateCompletion"),
+      t("courseDetail.lifetimeAccess"),
+      t("courseDetail.mobileAccess"),
+      t("courseDetail.moneyBackGuarantee")
+    ],
+    requirements: [
+      t("courseDetail.noProgramming"),
+      t("courseDetail.computerInternet"),
+      t("courseDetail.desireToLearn")
+    ],
+    curriculum: [
+      {
+        title: language === "ar" ? "مقدمة في تطوير الويب" : "Introduction to Web Development",
+        duration: language === "ar" ? "2 ساعة 30 د" : "2h 30m",
+        lectures: [
+          { title: language === "ar" ? "مرحباً بك في الدورة" : "Welcome to the Course", duration: "5:00", type: "video", free: true },
+          { title: language === "ar" ? "كيف يعمل الإنترنت" : "How the Internet Works", duration: "15:00", type: "video", free: true },
+          { title: language === "ar" ? "إعداد بيئة التطوير" : "Setting Up Your Development Environment", duration: "20:00", type: "video", free: false },
+          { title: language === "ar" ? "موارد الدورة" : "Course Resources", duration: "2:00", type: "resource", free: true }
+        ]
+      },
+      {
+        title: language === "ar" ? "أساسيات HTML" : "HTML Fundamentals",
+        duration: language === "ar" ? "4 ساعة 15 د" : "4h 15m",
+        lectures: [
+          { title: language === "ar" ? "ما هو HTML؟" : "What is HTML?", duration: "10:00", type: "video", free: false },
+          { title: language === "ar" ? "هيكل مستند HTML" : "HTML Document Structure", duration: "18:00", type: "video", free: false },
+          { title: language === "ar" ? "العمل مع عناصر النص" : "Working with Text Elements", duration: "25:00", type: "video", free: false },
+          { title: language === "ar" ? "الروابط والصور" : "Links and Images", duration: "30:00", type: "video", free: false },
+          { title: language === "ar" ? "مشروع HTML تطبيقي" : "HTML Practice Project", duration: "45:00", type: "video", free: false }
+        ]
+      },
+      {
+        title: language === "ar" ? "تنسيق CSS" : "CSS Styling",
+        duration: language === "ar" ? "6 ساعة 45 د" : "6h 45m",
+        lectures: [
+          { title: language === "ar" ? "مقدمة في CSS" : "Introduction to CSS", duration: "12:00", type: "video", free: false },
+          { title: language === "ar" ? "المحددات والخصائص" : "Selectors and Properties", duration: "28:00", type: "video", free: false },
+          { title: language === "ar" ? "نموذج الصندوق بالتفصيل" : "Box Model Deep Dive", duration: "35:00", type: "video", free: false },
+          { title: language === "ar" ? "تخطيط Flexbox" : "Flexbox Layout", duration: "45:00", type: "video", free: false },
+          { title: language === "ar" ? "إتقان CSS Grid" : "CSS Grid Mastery", duration: "50:00", type: "video", free: false },
+          { title: language === "ar" ? "التصميم المتجاوب" : "Responsive Design", duration: "40:00", type: "video", free: false }
+        ]
+      },
+      {
+        title: language === "ar" ? "أساسيات JavaScript" : "JavaScript Essentials",
+        duration: language === "ar" ? "8 ساعة 20 د" : "8h 20m",
+        lectures: [
+          { title: language === "ar" ? "أساسيات JavaScript" : "JavaScript Basics", duration: "20:00", type: "video", free: false },
+          { title: language === "ar" ? "المتغيرات وأنواع البيانات" : "Variables and Data Types", duration: "30:00", type: "video", free: false },
+          { title: language === "ar" ? "الدوال والنطاق" : "Functions and Scope", duration: "45:00", type: "video", free: false },
+          { title: language === "ar" ? "التعامل مع DOM" : "DOM Manipulation", duration: "55:00", type: "video", free: false },
+          { title: language === "ar" ? "معالجة الأحداث" : "Event Handling", duration: "40:00", type: "video", free: false },
+          { title: language === "ar" ? "JavaScript غير المتزامن" : "Async JavaScript", duration: "60:00", type: "video", free: false }
+        ]
+      },
+      {
+        title: language === "ar" ? "إطار عمل React" : "React Framework",
+        duration: language === "ar" ? "10 ساعة 30 د" : "10h 30m",
+        lectures: [
+          { title: language === "ar" ? "مقدمة في React" : "React Introduction", duration: "15:00", type: "video", free: false },
+          { title: language === "ar" ? "المكونات والخصائص" : "Components and Props", duration: "40:00", type: "video", free: false },
+          { title: language === "ar" ? "إدارة الحالة" : "State Management", duration: "55:00", type: "video", free: false },
+          { title: language === "ar" ? "Hooks بالتفصيل" : "Hooks Deep Dive", duration: "70:00", type: "video", free: false },
+          { title: language === "ar" ? "بناء تطبيق كامل" : "Building a Complete App", duration: "120:00", type: "video", free: false }
+        ]
+      }
+    ],
+    reviews: [
+      {
+        id: 1,
+        user: language === "ar" ? "مايكل تشن" : "Michael Chen",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+        rating: 5,
+        date: language === "ar" ? "منذ أسبوعين" : "2 weeks ago",
+        comment: language === "ar" 
+          ? "هذه الدورة غيرت مسيرتي المهنية بالكامل! انتقلت من عدم معرفة أي شيء عن البرمجة إلى الحصول على وظيفة مطور مبتدئ خلال 6 أشهر."
+          : "This course completely transformed my career! I went from knowing nothing about coding to landing a junior developer position within 6 months."
+      },
+      {
+        id: 2,
+        user: language === "ar" ? "إيميلي رودريغيز" : "Emily Rodriguez",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
+        rating: 5,
+        date: language === "ar" ? "منذ شهر" : "1 month ago",
+        comment: language === "ar"
+          ? "أفضل استثمار قمت به في تعليمي. المشاريع عملية وذات صلة، ودعم المجتمع مذهل."
+          : "Best investment I've ever made in my education. The projects are practical and relevant, and the community support is amazing."
+      },
+      {
+        id: 3,
+        user: language === "ar" ? "جيمس ويلسون" : "James Wilson",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+        rating: 4,
+        date: language === "ar" ? "منذ شهر" : "1 month ago",
+        comment: language === "ar"
+          ? "دورة شاملة رائعة تغطي جميع الأساسيات. بعض الأقسام يمكن أن تكون أكثر تعمقاً، لكن بشكل عام نقطة انطلاق ممتازة."
+          : "Great comprehensive course covering all the essentials. Some sections could be more in-depth, but overall an excellent starting point."
+      },
+      {
+        id: 4,
+        user: language === "ar" ? "بريا شارما" : "Priya Sharma",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+        rating: 5,
+        date: language === "ar" ? "منذ شهرين" : "2 months ago",
+        comment: language === "ar"
+          ? "المنهج منظم بشكل جيد ومحدث بأحدث ممارسات الصناعة. قسم React وحده يستحق سعر الدورة بأكملها!"
+          : "The curriculum is well-structured and up-to-date with the latest industry practices. The React section alone is worth the price of the entire course!"
+      }
+    ]
+  };
+
+  const ratingDistribution = [
+    { stars: 5, percentage: 78 },
+    { stars: 4, percentage: 15 },
+    { stars: 3, percentage: 5 },
+    { stars: 2, percentage: 1 },
+    { stars: 1, percentage: 1 }
+  ];
+
+  const whatYouLearn = [
+    t("courseDetail.buildProjects"),
+    t("courseDetail.masterHTML"),
+    t("courseDetail.createResponsive"),
+    t("courseDetail.learnReact"),
+    t("courseDetail.understandBackend"),
+    t("courseDetail.workWithDB"),
+    t("courseDetail.deployCloud"),
+    t("courseDetail.writeClean")
+  ];
 
   const totalLectures = courseData.curriculum.reduce(
     (acc, section) => acc + section.lectures.length, 
     0
   );
+
+  const ArrowIcon = isRTL ? ArrowRight : ArrowLeft;
 
   return (
     <div className="min-h-screen bg-background">
@@ -187,17 +217,17 @@ const CourseDetail = () => {
             to="/courses" 
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Courses
+            <ArrowIcon className="w-4 h-4" />
+            {t("courseDetail.backToCourses")}
           </Link>
           
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Course Info */}
             <div className="lg:col-span-2 space-y-6">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Bestseller</Badge>
+                <Badge variant="secondary">{t("courseDetail.bestseller")}</Badge>
                 <Badge variant="outline">{courseData.level}</Badge>
-                <Badge variant="outline">Updated {courseData.lastUpdated}</Badge>
+                <Badge variant="outline">{t("courseDetail.updated")} {courseData.lastUpdated}</Badge>
               </div>
               
               <h1 className="text-3xl md:text-4xl font-bold text-foreground">
@@ -212,11 +242,11 @@ const CourseDetail = () => {
                 <div className="flex items-center gap-1">
                   <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">{courseData.rating}</span>
-                  <span className="text-muted-foreground">({courseData.totalRatings.toLocaleString()} ratings)</span>
+                  <span className="text-muted-foreground">({courseData.totalRatings.toLocaleString()} {t("courseDetail.ratings")})</span>
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Users className="w-4 h-4" />
-                  {courseData.students.toLocaleString()} students
+                  {courseData.students.toLocaleString()} {t("courseDetail.students")}
                 </div>
               </div>
               
@@ -226,7 +256,7 @@ const CourseDetail = () => {
                   <AvatarFallback>{courseData.instructor.name[0]}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm text-muted-foreground">Created by</p>
+                  <p className="text-sm text-muted-foreground">{t("courseDetail.createdBy")}</p>
                   <p className="font-medium text-foreground">{courseData.instructor.name}</p>
                 </div>
               </div>
@@ -238,11 +268,11 @@ const CourseDetail = () => {
                 </span>
                 <span className="flex items-center gap-1">
                   <BookOpen className="w-4 h-4" />
-                  {courseData.lectures} lectures
+                  {courseData.lectures} {t("courseDetail.lectures")}
                 </span>
                 <span className="flex items-center gap-1">
                   <Award className="w-4 h-4" />
-                  Certificate included
+                  {t("courseDetail.certificateIncluded")}
                 </span>
               </div>
             </div>
@@ -274,7 +304,7 @@ const CourseDetail = () => {
                         </div>
                       </button>
                       <span className="absolute bottom-4 left-4 text-white text-sm font-medium">
-                        Preview this course
+                        {t("courseDetail.previewCourse")}
                       </span>
                     </>
                   )}
@@ -285,26 +315,26 @@ const CourseDetail = () => {
                     <span className="text-3xl font-bold text-foreground">${courseData.price}</span>
                     <span className="text-lg text-muted-foreground line-through">${courseData.originalPrice}</span>
                     <Badge variant="destructive" className="ml-2">
-                      {Math.round((1 - courseData.price / courseData.originalPrice) * 100)}% off
+                      {Math.round((1 - courseData.price / courseData.originalPrice) * 100)}% {t("courseDetail.off")}
                     </Badge>
                   </div>
                   
                   <div className="space-y-3">
                     <Button className="w-full" size="lg">
-                      Enroll Now
+                      {t("courseDetail.enrollNow")}
                     </Button>
                     <Button variant="outline" className="w-full" size="lg">
-                      Add to Wishlist
-                      <Heart className="w-4 h-4 ml-2" />
+                      {t("courseDetail.addToWishlist")}
+                      <Heart className="w-4 h-4 ms-2" />
                     </Button>
                   </div>
                   
                   <p className="text-center text-sm text-muted-foreground">
-                    30-Day Money-Back Guarantee
+                    {t("courseDetail.moneyBack")}
                   </p>
                   
                   <div className="pt-4 border-t border-border space-y-3">
-                    <h4 className="font-semibold text-foreground">This course includes:</h4>
+                    <h4 className="font-semibold text-foreground">{t("courseDetail.courseIncludes")}</h4>
                     <ul className="space-y-2">
                       {courseData.features.slice(0, 6).map((feature, index) => (
                         <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -316,8 +346,8 @@ const CourseDetail = () => {
                   </div>
                   
                   <Button variant="ghost" className="w-full">
-                    <Share2 className="w-4 h-4 mr-2" />
-                    Share
+                    <Share2 className="w-4 h-4 me-2" />
+                    {t("courseDetail.share")}
                   </Button>
                 </CardContent>
               </Card>
@@ -333,20 +363,11 @@ const CourseDetail = () => {
             
             {/* What You'll Learn */}
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-6">What you'll learn</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">{t("courseDetail.whatYouLearn")}</h2>
               <Card className="border-border/50">
                 <CardContent className="p-6">
                   <div className="grid md:grid-cols-2 gap-4">
-                    {[
-                      "Build 15+ real-world web projects",
-                      "Master HTML5, CSS3, and modern JavaScript",
-                      "Create responsive websites from scratch",
-                      "Learn React and build single-page applications",
-                      "Understand backend development with Node.js",
-                      "Work with databases like MongoDB",
-                      "Deploy applications to the cloud",
-                      "Write clean, maintainable code"
-                    ].map((item, index) => (
+                    {whatYouLearn.map((item, index) => (
                       <div key={index} className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-foreground">{item}</span>
@@ -359,7 +380,7 @@ const CourseDetail = () => {
             
             {/* Requirements */}
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-6">Requirements</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">{t("courseDetail.requirements")}</h2>
               <ul className="space-y-3">
                 {courseData.requirements.map((req, index) => (
                   <li key={index} className="flex items-center gap-3 text-muted-foreground">
@@ -373,9 +394,9 @@ const CourseDetail = () => {
             {/* Curriculum */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-foreground">Course Curriculum</h2>
+                <h2 className="text-2xl font-bold text-foreground">{t("courseDetail.courseCurriculum")}</h2>
                 <span className="text-sm text-muted-foreground">
-                  {courseData.curriculum.length} sections • {totalLectures} lectures • {courseData.duration}
+                  {courseData.curriculum.length} {t("courseDetail.sections")} • {totalLectures} {t("courseDetail.lectures")} • {courseData.duration}
                 </span>
               </div>
               
@@ -387,10 +408,10 @@ const CourseDetail = () => {
                     className="border border-border/50 rounded-lg px-4 data-[state=open]:bg-muted/30"
                   >
                     <AccordionTrigger className="hover:no-underline py-4">
-                      <div className="flex flex-col items-start text-left">
+                      <div className="flex flex-col items-start text-start">
                         <span className="font-semibold text-foreground">{section.title}</span>
                         <span className="text-sm text-muted-foreground">
-                          {section.lectures.length} lectures • {section.duration}
+                          {section.lectures.length} {t("courseDetail.lectures")} • {section.duration}
                         </span>
                       </div>
                     </AccordionTrigger>
@@ -411,7 +432,7 @@ const CourseDetail = () => {
                               )}
                               <span className="text-foreground">{lecture.title}</span>
                               {lecture.free && (
-                                <Badge variant="secondary" className="text-xs">Preview</Badge>
+                                <Badge variant="secondary" className="text-xs">{t("courseDetail.preview")}</Badge>
                               )}
                             </div>
                             <span className="text-sm text-muted-foreground">{lecture.duration}</span>
@@ -426,7 +447,7 @@ const CourseDetail = () => {
             
             {/* Instructor */}
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-6">Your Instructor</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">{t("courseDetail.yourInstructor")}</h2>
               <Card className="border-border/50">
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row gap-6">
@@ -442,15 +463,15 @@ const CourseDetail = () => {
                       <div className="flex flex-wrap gap-4 text-sm">
                         <span className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-yellow-400" />
-                          {courseData.instructor.rating} Instructor Rating
+                          {courseData.instructor.rating} {t("courseDetail.instructorRating")}
                         </span>
                         <span className="flex items-center gap-1">
                           <Award className="w-4 h-4 text-muted-foreground" />
-                          {courseData.instructor.courses} Courses
+                          {courseData.instructor.courses} {t("courseDetail.courses")}
                         </span>
                         <span className="flex items-center gap-1">
                           <Users className="w-4 h-4 text-muted-foreground" />
-                          {courseData.instructor.students.toLocaleString()} Students
+                          {courseData.instructor.students.toLocaleString()} {t("courseDetail.students")}
                         </span>
                       </div>
                       <p className="text-muted-foreground leading-relaxed">
@@ -464,7 +485,7 @@ const CourseDetail = () => {
             
             {/* Reviews */}
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-6">Student Reviews</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">{t("courseDetail.studentReviews")}</h2>
               
               {/* Rating Summary */}
               <Card className="border-border/50 mb-6">
@@ -480,7 +501,7 @@ const CourseDetail = () => {
                           />
                         ))}
                       </div>
-                      <p className="text-sm text-muted-foreground">Course Rating</p>
+                      <p className="text-sm text-muted-foreground">{t("courseDetail.courseRating")}</p>
                     </div>
                     <div className="flex-1 space-y-2">
                       {ratingDistribution.map((item) => (
@@ -530,7 +551,7 @@ const CourseDetail = () => {
               </div>
               
               <Button variant="outline" className="w-full mt-6">
-                Show All Reviews
+                {t("courseDetail.showAllReviews")}
               </Button>
             </div>
           </div>
