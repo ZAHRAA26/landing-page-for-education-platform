@@ -17,59 +17,91 @@ import {
   MessageSquare
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const categories = [
-  {
-    icon: BookOpen,
-    title: "Getting Started",
-    description: "Learn the basics of using EduLearn",
-    articles: ["How to create an account", "Navigating the platform", "Finding your first course", "Setting up your profile"]
-  },
-  {
-    icon: PlayCircle,
-    title: "Courses & Learning",
-    description: "Everything about taking courses",
-    articles: ["Enrolling in courses", "Tracking your progress", "Downloading resources", "Earning certificates"]
-  },
-  {
-    icon: CreditCard,
-    title: "Payments & Billing",
-    description: "Manage your payments and subscriptions",
-    articles: ["Payment methods", "Subscription plans", "Refund policy", "Invoice and receipts"]
-  },
-  {
-    icon: User,
-    title: "Account Management",
-    description: "Update your account settings",
-    articles: ["Changing password", "Updating email", "Privacy settings", "Deleting account"]
-  },
-  {
-    icon: Settings,
-    title: "Technical Issues",
-    description: "Troubleshoot common problems",
-    articles: ["Video playback issues", "Login problems", "Browser compatibility", "Mobile app help"]
-  },
-  {
-    icon: MessageCircle,
-    title: "Community & Support",
-    description: "Connect with others",
-    articles: ["Discussion forums", "Study groups", "Contacting instructors", "Reporting issues"]
-  }
-];
-
-const popularArticles = [
-  "How do I get a refund?",
-  "Can I download course videos?",
-  "How do certificates work?",
-  "Why won't my video play?",
-  "How to cancel my subscription"
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const HelpCenter = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { t, isRTL } = useLanguage();
+
+  const categories = [
+    {
+      icon: BookOpen,
+      title: t("helpCenter.gettingStarted"),
+      description: t("helpCenter.gettingStartedDesc"),
+      articles: [
+        t("helpCenter.article1"),
+        t("helpCenter.article2"),
+        t("helpCenter.article3"),
+        t("helpCenter.article4")
+      ]
+    },
+    {
+      icon: PlayCircle,
+      title: t("helpCenter.coursesLearning"),
+      description: t("helpCenter.coursesLearningDesc"),
+      articles: [
+        t("helpCenter.article5"),
+        t("helpCenter.article6"),
+        t("helpCenter.article7"),
+        t("helpCenter.article8")
+      ]
+    },
+    {
+      icon: CreditCard,
+      title: t("helpCenter.paymentsBilling"),
+      description: t("helpCenter.paymentsBillingDesc"),
+      articles: [
+        t("helpCenter.article9"),
+        t("helpCenter.article10"),
+        t("helpCenter.article11"),
+        t("helpCenter.article12")
+      ]
+    },
+    {
+      icon: User,
+      title: t("helpCenter.accountManagement"),
+      description: t("helpCenter.accountManagementDesc"),
+      articles: [
+        t("helpCenter.article13"),
+        t("helpCenter.article14"),
+        t("helpCenter.article15"),
+        t("helpCenter.article16")
+      ]
+    },
+    {
+      icon: Settings,
+      title: t("helpCenter.technicalIssues"),
+      description: t("helpCenter.technicalIssuesDesc"),
+      articles: [
+        t("helpCenter.article17"),
+        t("helpCenter.article18"),
+        t("helpCenter.article19"),
+        t("helpCenter.article20")
+      ]
+    },
+    {
+      icon: MessageCircle,
+      title: t("helpCenter.communitySupport"),
+      description: t("helpCenter.communitySupportDesc"),
+      articles: [
+        t("helpCenter.article21"),
+        t("helpCenter.article22"),
+        t("helpCenter.article23"),
+        t("helpCenter.article24")
+      ]
+    }
+  ];
+
+  const popularArticles = [
+    t("helpCenter.popular1"),
+    t("helpCenter.popular2"),
+    t("helpCenter.popular3"),
+    t("helpCenter.popular4"),
+    t("helpCenter.popular5")
+  ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${isRTL ? "rtl" : "ltr"}`}>
       <Navbar />
       
       {/* Hero Section */}
@@ -77,19 +109,19 @@ const HelpCenter = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-              How can we help you?
+              {t("helpCenter.title")}
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Search our knowledge base or browse categories below
+              {t("helpCenter.subtitle")}
             </p>
             <div className="relative max-w-xl mx-auto">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Search className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
               <Input
                 type="text"
-                placeholder="Search for help articles..."
+                placeholder={t("helpCenter.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 py-6 text-lg rounded-xl"
+                className={`${isRTL ? "pr-12" : "pl-12"} py-6 text-lg rounded-xl`}
               />
             </div>
           </div>
@@ -101,7 +133,7 @@ const HelpCenter = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">
-              Popular Articles
+              {t("helpCenter.popularArticles")}
             </h2>
             <div className="flex flex-wrap gap-3">
               {popularArticles.map((article, index) => (
@@ -122,7 +154,7 @@ const HelpCenter = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
-              Browse by Category
+              {t("helpCenter.browseByCategory")}
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {categories.map((category, index) => (
@@ -146,7 +178,7 @@ const HelpCenter = () => {
                           href="#"
                           className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
                         >
-                          <ChevronRight className="w-4 h-4" />
+                          <ChevronRight className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} />
                           {article}
                         </a>
                       </li>
@@ -164,41 +196,41 @@ const HelpCenter = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Still need help?
+              {t("helpCenter.stillNeedHelp")}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Our support team is here to assist you
+              {t("helpCenter.supportTeam")}
             </p>
             <div className="grid sm:grid-cols-3 gap-6">
               <div className="p-6 bg-card rounded-2xl border border-border">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Mail className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Email Us</h3>
+                <h3 className="font-semibold text-foreground mb-2">{t("helpCenter.emailUs")}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Get a response within 24 hours
+                  {t("helpCenter.emailResponse")}
                 </p>
                 <Button variant="outline" asChild>
-                  <Link to="/contact">Send Email</Link>
+                  <Link to="/contact">{t("helpCenter.sendEmail")}</Link>
                 </Button>
               </div>
               <div className="p-6 bg-card rounded-2xl border border-border">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <MessageSquare className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Live Chat</h3>
+                <h3 className="font-semibold text-foreground mb-2">{t("helpCenter.liveChat")}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Chat with us in real-time
+                  {t("helpCenter.chatRealTime")}
                 </p>
-                <Button variant="outline">Start Chat</Button>
+                <Button variant="outline">{t("helpCenter.startChat")}</Button>
               </div>
               <div className="p-6 bg-card rounded-2xl border border-border">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Phone className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Call Us</h3>
+                <h3 className="font-semibold text-foreground mb-2">{t("helpCenter.callUs")}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Mon-Fri, 9am-6pm PST
+                  {t("helpCenter.callHours")}
                 </p>
                 <Button variant="outline">+1 (555) 123-4567</Button>
               </div>
