@@ -23,6 +23,7 @@ import BecomeInstructor from "./pages/BecomeInstructor";
 import Enterprise from "./pages/Enterprise";
 import MobileApp from "./pages/MobileApp";
 import CookiePolicy from "./pages/CookiePolicy";
+import CreateCourse from "./pages/CreateCourse";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/enterprise" element={<Enterprise />} />
               <Route path="/mobile-app" element={<MobileApp />} />
               <Route path="/cookies" element={<CookiePolicy />} />
+              <Route path="/create-course" element={<CreateCourse />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
