@@ -14,12 +14,15 @@ import {
   LogOut,
   User,
   TrendingUp,
-  Calendar
+  Calendar,
+  Upload,
+  MessageSquare,
+  DollarSign
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState<"student" | "admin">("student");
+  const [activeTab, setActiveTab] = useState<"student" | "teacher" | "admin">("student");
   const { t, isRTL, language } = useLanguage();
 
   const enrolledCourses = [
@@ -130,10 +133,10 @@ const Dashboard = () => {
           <nav className="space-y-2">
             {/* Role Toggle */}
             <div className="bg-secondary rounded-lg p-1 mb-6">
-              <div className="grid grid-cols-2 gap-1">
+              <div className="grid grid-cols-3 gap-1">
                 <button
                   onClick={() => setActiveTab("student")}
-                  className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
                     activeTab === "student" 
                       ? "bg-card text-foreground shadow-soft" 
                       : "text-muted-foreground hover:text-foreground"
@@ -142,8 +145,18 @@ const Dashboard = () => {
                   {t("dashboard.student")}
                 </button>
                 <button
+                  onClick={() => setActiveTab("teacher")}
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                    activeTab === "teacher" 
+                      ? "bg-card text-foreground shadow-soft" 
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t("dashboard.teacher")}
+                </button>
+                <button
                   onClick={() => setActiveTab("admin")}
-                  className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
                     activeTab === "admin" 
                       ? "bg-card text-foreground shadow-soft" 
                       : "text-muted-foreground hover:text-foreground"
@@ -174,7 +187,7 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <main className={`flex-1 ${isRTL ? 'lg:mr-64' : 'lg:ml-64'} p-6 lg:p-8`}>
-          {activeTab === "student" ? (
+          {activeTab === "student" && (
             <StudentDashboard 
               t={t} 
               isRTL={isRTL} 
@@ -183,7 +196,14 @@ const Dashboard = () => {
               upcomingDeadlines={upcomingDeadlines}
               ChevronIcon={ChevronIcon}
             />
-          ) : (
+          )}
+          {activeTab === "teacher" && (
+            <TeacherDashboard 
+              t={t} 
+              language={language}
+            />
+          )}
+          {activeTab === "admin" && (
             <AdminDashboard 
               t={t} 
               recentActivity={recentActivity}
@@ -303,6 +323,191 @@ const StudentDashboard = ({ t, isRTL, enrolledCourses, achievements, upcomingDea
     </div>
   </>
 );
+
+interface TeacherDashboardProps {
+  t: (key: string) => string;
+  language: string;
+}
+
+const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
+  const teacherCourses = [
+    {
+      id: 1,
+      title: language === "ar" ? "معسكر تطوير الويب الكامل" : "Complete Web Development Bootcamp",
+      students: 1234,
+      rating: 4.8,
+      revenue: "$12,450",
+      image: "from-primary/30 to-accent/20",
+    },
+    {
+      id: 2,
+      title: language === "ar" ? "دورة React و Next.js المتقدمة" : "React & Next.js Advanced Course",
+      students: 856,
+      rating: 4.9,
+      revenue: "$8,920",
+      image: "from-accent/30 to-primary/20",
+    },
+    {
+      id: 3,
+      title: language === "ar" ? "أساسيات JavaScript للمبتدئين" : "JavaScript Fundamentals for Beginners",
+      students: 2341,
+      rating: 4.7,
+      revenue: "$18,750",
+      image: "from-primary/20 to-accent/30",
+    },
+  ];
+
+  const recentEnrollments = [
+    {
+      student: language === "ar" ? "أحمد محمد" : "John Smith",
+      course: language === "ar" ? "تطوير الويب" : "Web Development",
+      time: language === "ar" ? "منذ 5 دقائق" : "5 min ago",
+    },
+    {
+      student: language === "ar" ? "سارة أحمد" : "Emily Davis",
+      course: language === "ar" ? "React المتقدم" : "React Advanced",
+      time: language === "ar" ? "منذ 20 دقيقة" : "20 min ago",
+    },
+    {
+      student: language === "ar" ? "محمد علي" : "Michael Brown",
+      course: language === "ar" ? "JavaScript للمبتدئين" : "JavaScript Basics",
+      time: language === "ar" ? "منذ ساعة" : "1 hour ago",
+    },
+  ];
+
+  const pendingQuestions = [
+    {
+      student: language === "ar" ? "فاطمة حسن" : "Sarah Wilson",
+      question: language === "ar" ? "كيف أنشئ API في Node.js؟" : "How do I create an API in Node.js?",
+      course: language === "ar" ? "تطوير الويب" : "Web Development",
+    },
+    {
+      student: language === "ar" ? "عمر خالد" : "Tom Anderson",
+      question: language === "ar" ? "ما الفرق بين useState و useReducer؟" : "What's the difference between useState and useReducer?",
+      course: language === "ar" ? "React المتقدم" : "React Advanced",
+    },
+  ];
+
+  return (
+    <>
+      {/* Welcome */}
+      <div className="mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
+          {t("dashboard.teacherDashboard")}
+        </h1>
+        <p className="text-muted-foreground">
+          {t("dashboard.teacherDescription")}
+        </p>
+      </div>
+
+      {/* Stats */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <StatCard icon={<BookOpen />} value="3" label={t("dashboard.myCoursesTaught")} color="primary" />
+        <StatCard icon={<User />} value="4,431" label={t("dashboard.totalStudentsEnrolled")} color="accent" />
+        <StatCard icon={<TrendingUp />} value="$40,120" label={t("dashboard.courseRevenue")} color="primary" />
+        <StatCard icon={<Award />} value="4.8" label={t("dashboard.avgRating")} color="accent" />
+      </div>
+
+      {/* Quick Actions */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold text-foreground mb-4">{t("dashboard.quickActions")}</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
+            <BookOpen className="w-6 h-6 text-primary" />
+            <span>{t("dashboard.createCourse")}</span>
+          </Button>
+          <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
+            <Upload className="w-6 h-6 text-primary" />
+            <span>{t("dashboard.uploadContent")}</span>
+          </Button>
+          <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
+            <MessageSquare className="w-6 h-6 text-primary" />
+            <span>{t("dashboard.respondToQuestions")}</span>
+          </Button>
+          <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
+            <DollarSign className="w-6 h-6 text-primary" />
+            <span>{t("dashboard.withdrawFunds")}</span>
+          </Button>
+        </div>
+      </section>
+
+      {/* My Courses */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold text-foreground mb-4">{t("dashboard.manageCourses")}</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {teacherCourses.map((course) => (
+            <div key={course.id} className="bg-card rounded-2xl border border-border/50 overflow-hidden shadow-soft">
+              <div className={`aspect-[3/1] bg-gradient-to-br ${course.image}`} />
+              <div className="p-4">
+                <h3 className="font-bold text-foreground mb-2 line-clamp-1">{course.title}</h3>
+                <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+                  <span className="flex items-center gap-1">
+                    <User className="w-4 h-4" /> {course.students} {t("courseDetail.students")}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    ⭐ {course.rating}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-primary font-bold">{course.revenue}</span>
+                  <Button size="sm" variant="outline">{t("dashboard.editCourse")}</Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Recent Enrollments */}
+        <section className="bg-card rounded-2xl border border-border/50 p-6">
+          <h2 className="text-lg font-bold text-foreground mb-4">{t("dashboard.recentEnrollments")}</h2>
+          <div className="space-y-3">
+            {recentEnrollments.map((enrollment, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-secondary/50 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    {enrollment.student.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">{enrollment.student}</p>
+                    <p className="text-sm text-muted-foreground">{enrollment.course}</p>
+                  </div>
+                </div>
+                <span className="text-xs text-muted-foreground">{enrollment.time}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Pending Questions */}
+        <section className="bg-card rounded-2xl border border-border/50 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-foreground">{t("dashboard.pendingQuestions")}</h2>
+            <span className="bg-accent/10 text-accent text-xs font-medium px-2 py-1 rounded-full">
+              {pendingQuestions.length}
+            </span>
+          </div>
+          <div className="space-y-3">
+            {pendingQuestions.map((item, index) => (
+              <div key={index} className="p-3 bg-secondary/50 rounded-xl">
+                <div className="flex items-start justify-between mb-2">
+                  <p className="font-semibold text-foreground">{item.student}</p>
+                  <span className="text-xs text-muted-foreground">{item.course}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">{item.question}</p>
+                <Button size="sm" variant="hero" className="w-full">
+                  <MessageSquare className="w-4 h-4 mr-1" />
+                  {t("dashboard.respondToQuestions")}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </>
+  );
+};
 
 interface AdminDashboardProps {
   t: (key: string) => string;
