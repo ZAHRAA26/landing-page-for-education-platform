@@ -412,10 +412,12 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
       <section className="mb-8">
         <h2 className="text-xl font-bold text-foreground mb-4">{t("dashboard.quickActions")}</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
-            <BookOpen className="w-6 h-6 text-primary" />
-            <span>{t("dashboard.createCourse")}</span>
-          </Button>
+          <Link to="/create-course">
+            <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
+              <BookOpen className="w-6 h-6 text-primary" />
+              <span>{t("dashboard.createCourse")}</span>
+            </Button>
+          </Link>
           <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
             <Upload className="w-6 h-6 text-primary" />
             <span>{t("dashboard.uploadContent")}</span>
