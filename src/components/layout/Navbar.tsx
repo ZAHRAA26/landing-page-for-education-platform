@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, GraduationCap } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Navbar = () => {
@@ -64,6 +65,7 @@ export const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
             <LanguageSwitcher />
             <Button variant="ghost" size="default" asChild>
               <Link to="/auth">{t("nav.login")}</Link>
@@ -109,7 +111,10 @@ export const Navbar = () => {
                 )
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <LanguageSwitcher />
+                <div className="flex items-center justify-center gap-2">
+                  <ThemeToggle />
+                  <LanguageSwitcher />
+                </div>
                 <Button variant="ghost" className="w-full justify-center" asChild>
                   <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.login")}</Link>
                 </Button>
