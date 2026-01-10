@@ -17,7 +17,8 @@ import {
   Calendar,
   Upload,
   MessageSquare,
-  DollarSign
+  DollarSign,
+  BarChart3
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -411,7 +412,7 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
       {/* Quick Actions */}
       <section className="mb-8">
         <h2 className="text-xl font-bold text-foreground mb-4">{t("dashboard.quickActions")}</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <Link to="/create-course">
             <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
               <BookOpen className="w-6 h-6 text-primary" />
@@ -426,6 +427,12 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
             <MessageSquare className="w-6 h-6 text-primary" />
             <span>{t("dashboard.respondToQuestions")}</span>
           </Button>
+          <Link to="/teacher-analytics">
+            <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
+              <BarChart3 className="w-6 h-6 text-primary" />
+              <span>{t("dashboard.viewAnalyticsPage")}</span>
+            </Button>
+          </Link>
           <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
             <DollarSign className="w-6 h-6 text-primary" />
             <span>{t("dashboard.withdrawFunds")}</span>
