@@ -452,7 +452,9 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-primary font-bold">{course.revenue}</span>
-                  <Button size="sm" variant="outline">{t("dashboard.editCourse")}</Button>
+                  <Link to={`/edit-course/${course.id}`}>
+                    <Button size="sm" variant="outline">{t("dashboard.editCourse")}</Button>
+                  </Link>
                 </div>
               </div>
             </div>
