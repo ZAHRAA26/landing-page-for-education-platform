@@ -494,6 +494,21 @@ const translations = {
     "createCourse.createCourse": "Create Course",
     "createCourse.successTitle": "Course Created!",
     "createCourse.successMessage": "Your course has been created successfully. You can now add content and publish it.",
+    
+    // Edit Course Page
+    "editCourse.backToDashboard": "Back to Dashboard",
+    "editCourse.title": "Edit Course",
+    "editCourse.subtitle": "Update your course details, upload videos and add learning materials.",
+    "editCourse.curriculumMedia": "Curriculum & Media",
+    "editCourse.lessonVideo": "Lesson Video",
+    "editCourse.uploadVideo": "Click to upload video (MP4, WebM)",
+    "editCourse.videoUploaded": "Video uploaded successfully",
+    "editCourse.attachments": "Attachments & Resources",
+    "editCourse.addAttachment": "Add attachment (PDF, DOC, PPT, etc.)",
+    "editCourse.saving": "Saving...",
+    "editCourse.saveChanges": "Save Changes",
+    "editCourse.successTitle": "Changes Saved!",
+    "editCourse.successMessage": "Your course has been updated successfully.",
   },
   ar: {
     // Navbar
@@ -979,6 +994,21 @@ const translations = {
     "createCourse.createCourse": "إنشاء الدورة",
     "createCourse.successTitle": "تم إنشاء الدورة!",
     "createCourse.successMessage": "تم إنشاء دورتك بنجاح. يمكنك الآن إضافة المحتوى ونشرها.",
+    
+    // Edit Course Page
+    "editCourse.backToDashboard": "العودة إلى لوحة التحكم",
+    "editCourse.title": "تعديل الدورة",
+    "editCourse.subtitle": "قم بتحديث تفاصيل دورتك، ورفع الفيديوهات وإضافة المواد التعليمية.",
+    "editCourse.curriculumMedia": "المنهج والوسائط",
+    "editCourse.lessonVideo": "فيديو الدرس",
+    "editCourse.uploadVideo": "انقر لرفع فيديو (MP4, WebM)",
+    "editCourse.videoUploaded": "تم رفع الفيديو بنجاح",
+    "editCourse.attachments": "المرفقات والموارد",
+    "editCourse.addAttachment": "إضافة مرفق (PDF, DOC, PPT, إلخ.)",
+    "editCourse.saving": "جاري الحفظ...",
+    "editCourse.saveChanges": "حفظ التغييرات",
+    "editCourse.successTitle": "تم حفظ التغييرات!",
+    "editCourse.successMessage": "تم تحديث دورتك بنجاح.",
   },
 };
 
