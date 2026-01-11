@@ -22,6 +22,7 @@ import {
   Users
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import NotificationDropdown, { Notification } from "@/components/NotificationDropdown";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"student" | "teacher" | "admin">("student");
@@ -96,6 +97,60 @@ const Dashboard = () => {
     }
   ];
 
+  // Notifications state
+  const [notifications, setNotifications] = useState<Notification[]>([
+    {
+      id: 1,
+      type: "enrollment",
+      title: language === "ar" ? "طالب جديد مسجل" : "New Student Enrolled",
+      message: language === "ar" 
+        ? "سجل أحمد محمد في دورة 'معسكر تطوير الويب الكامل'" 
+        : "John Smith enrolled in 'Complete Web Development Bootcamp'",
+      time: language === "ar" ? "منذ 5 دقائق" : "5 min ago",
+      read: false,
+    },
+    {
+      id: 2,
+      type: "question",
+      title: language === "ar" ? "سؤال جديد" : "New Question",
+      message: language === "ar" 
+        ? "سارة أحمد سألت: كيف أنشئ API في Node.js؟" 
+        : "Emily Davis asked: How do I create an API in Node.js?",
+      time: language === "ar" ? "منذ 20 دقيقة" : "20 min ago",
+      read: false,
+    },
+    {
+      id: 3,
+      type: "review",
+      title: language === "ar" ? "تقييم جديد" : "New Review",
+      message: language === "ar" 
+        ? "حصلت دورتك على تقييم 5 نجوم" 
+        : "Your course received a 5-star review",
+      time: language === "ar" ? "منذ ساعة" : "1 hour ago",
+      read: false,
+    },
+    {
+      id: 4,
+      type: "milestone",
+      title: language === "ar" ? "إنجاز جديد!" : "New Milestone!",
+      message: language === "ar" 
+        ? "تجاوز عدد طلابك 1000 طالب! 🎉" 
+        : "You've reached 1,000 students! 🎉",
+      time: language === "ar" ? "منذ 3 ساعات" : "3 hours ago",
+      read: true,
+    },
+  ]);
+
+  const handleMarkAsRead = (id: number) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    );
+  };
+
+  const handleMarkAllAsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
+
   const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
 
   return (
@@ -114,10 +169,11 @@ const Dashboard = () => {
             </Link>
 
             <div className="flex items-center gap-4">
-              <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
-              </button>
+              <NotificationDropdown
+                notifications={notifications}
+                onMarkAsRead={handleMarkAsRead}
+                onMarkAllAsRead={handleMarkAllAsRead}
+              />
               <Link to="/settings" className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                 <Settings className="w-5 h-5" />
               </Link>

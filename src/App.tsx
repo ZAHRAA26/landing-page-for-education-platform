@@ -27,6 +27,7 @@ import CreateCourse from "./pages/CreateCourse";
 import EditCourse from "./pages/EditCourse";
 import TeacherAnalytics from "./pages/TeacherAnalytics";
 import StudentManagement from "./pages/StudentManagement";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,7 @@ const App = () => (
               <Route path="/edit-course/:id" element={<EditCourse />} />
               <Route path="/teacher-analytics" element={<TeacherAnalytics />} />
               <Route path="/student-management" element={<StudentManagement />} />
+              <Route path="/notifications" element={<Notifications />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
