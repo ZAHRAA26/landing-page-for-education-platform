@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
+import {
   GraduationCap, 
   BookOpen, 
   Clock, 
@@ -18,7 +18,8 @@ import {
   Upload,
   MessageSquare,
   DollarSign,
-  BarChart3
+  BarChart3,
+  Users
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -412,11 +413,17 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
       {/* Quick Actions */}
       <section className="mb-8">
         <h2 className="text-xl font-bold text-foreground mb-4">{t("dashboard.quickActions")}</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <Link to="/create-course">
             <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
               <BookOpen className="w-6 h-6 text-primary" />
               <span>{t("dashboard.createCourse")}</span>
+            </Button>
+          </Link>
+          <Link to="/student-management">
+            <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
+              <Users className="w-6 h-6 text-primary" />
+              <span>{t("dashboard.manageStudents")}</span>
             </Button>
           </Link>
           <Button variant="outline" className="h-auto py-6 flex flex-col gap-2">
