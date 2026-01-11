@@ -26,6 +26,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import CreateCourse from "./pages/CreateCourse";
 import EditCourse from "./pages/EditCourse";
 import TeacherAnalytics from "./pages/TeacherAnalytics";
+import StudentManagement from "./pages/StudentManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/create-course" element={<CreateCourse />} />
               <Route path="/edit-course/:id" element={<EditCourse />} />
               <Route path="/teacher-analytics" element={<TeacherAnalytics />} />
+              <Route path="/student-management" element={<StudentManagement />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
