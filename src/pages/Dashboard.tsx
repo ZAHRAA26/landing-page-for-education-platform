@@ -19,7 +19,8 @@ import {
   MessageSquare,
   DollarSign,
   BarChart3,
-  Users
+  Users,
+  Eye
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import NotificationDropdown, { Notification } from "@/components/NotificationDropdown";
@@ -522,9 +523,16 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-primary font-bold">{course.revenue}</span>
-                  <Link to={`/edit-course/${course.id}`}>
-                    <Button size="sm" variant="outline">{t("dashboard.editCourse")}</Button>
-                  </Link>
+                  <div className="flex gap-2">
+                    <Link to={`/course-preview/${course.id}`}>
+                      <Button size="sm" variant="ghost">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                    <Link to={`/edit-course/${course.id}`}>
+                      <Button size="sm" variant="outline">{t("dashboard.editCourse")}</Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
