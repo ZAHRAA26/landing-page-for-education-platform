@@ -25,6 +25,7 @@ import MobileApp from "./pages/MobileApp";
 import CookiePolicy from "./pages/CookiePolicy";
 import CreateCourse from "./pages/CreateCourse";
 import EditCourse from "./pages/EditCourse";
+import CoursePreview from "./pages/CoursePreview";
 import TeacherAnalytics from "./pages/TeacherAnalytics";
 import StudentManagement from "./pages/StudentManagement";
 import Notifications from "./pages/Notifications";
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/create-course" element={<CreateCourse />} />
               <Route path="/edit-course/:id" element={<EditCourse />} />
+              <Route path="/course-preview/:id" element={<CoursePreview />} />
               <Route path="/teacher-analytics" element={<TeacherAnalytics />} />
               <Route path="/student-management" element={<StudentManagement />} />
               <Route path="/notifications" element={<Notifications />} />
