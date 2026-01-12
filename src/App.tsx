@@ -29,6 +29,7 @@ import CoursePreview from "./pages/CoursePreview";
 import TeacherAnalytics from "./pages/TeacherAnalytics";
 import StudentManagement from "./pages/StudentManagement";
 import Notifications from "./pages/Notifications";
+import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/teacher-analytics" element={<TeacherAnalytics />} />
               <Route path="/student-management" element={<StudentManagement />} />
               <Route path="/notifications" element={<Notifications />} />
+              <Route path="/messages" element={<Messages />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
