@@ -20,7 +20,8 @@ import {
   DollarSign,
   BarChart3,
   Users,
-  Eye
+  Eye,
+  Mail
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import NotificationDropdown, { Notification } from "@/components/NotificationDropdown";
@@ -491,6 +492,12 @@ const TeacherDashboard = ({ t, language }: TeacherDashboardProps) => {
             <MessageSquare className="w-6 h-6 text-primary" />
             <span>{t("dashboard.respondToQuestions")}</span>
           </Button>
+          <Link to="/messages">
+            <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
+              <Mail className="w-6 h-6 text-primary" />
+              <span>{t("dashboard.messages")}</span>
+            </Button>
+          </Link>
           <Link to="/teacher-analytics">
             <Button variant="outline" className="h-auto py-6 flex flex-col gap-2 w-full">
               <BarChart3 className="w-6 h-6 text-primary" />
