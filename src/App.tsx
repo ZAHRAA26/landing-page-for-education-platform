@@ -30,6 +30,7 @@ import TeacherAnalytics from "./pages/TeacherAnalytics";
 import StudentManagement from "./pages/StudentManagement";
 import Notifications from "./pages/Notifications";
 import Messages from "./pages/Messages";
+import Certificates from "./pages/Certificates";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/student-management" element={<StudentManagement />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/certificates" element={<Certificates />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
