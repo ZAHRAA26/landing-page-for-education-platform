@@ -229,7 +229,9 @@ const Dashboard = () => {
 
             <SidebarLink icon={<BookOpen />} label={t("dashboard.myCourses")} active />
             <SidebarLink icon={<TrendingUp />} label={t("dashboard.progress")} />
-            <SidebarLink icon={<Award />} label={t("dashboard.certificates")} />
+            <Link to="/certificates">
+              <SidebarLink icon={<Award />} label={t("dashboard.certificates")} />
+            </Link>
             <SidebarLink icon={<Calendar />} label={t("dashboard.schedule")} />
             <SidebarLink icon={<User />} label={t("dashboard.profile")} />
             
