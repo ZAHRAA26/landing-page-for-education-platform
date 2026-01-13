@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   GraduationCap,
   ArrowLeft,
@@ -19,9 +25,22 @@ import {
   Plus,
   Users,
   MessageCircle,
+  Image,
+  FileText,
+  File,
+  X,
+  Download,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+
+interface Attachment {
+  id: number;
+  name: string;
+  type: "image" | "document" | "file";
+  url: string;
+  size: string;
+}
 
 interface Message {
   id: number;
@@ -29,6 +48,7 @@ interface Message {
   timestamp: string;
   isOwn: boolean;
   read: boolean;
+  attachments?: Attachment[];
 }
 
 interface Conversation {
@@ -54,6 +74,11 @@ const Messages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"all" | "unread" | "starred">("all");
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
 
@@ -239,13 +264,19 @@ const Messages = () => {
   });
 
   const handleSendMessage = () => {
-    if (!newMessage.trim() || !activeConversation) return;
+    if ((!newMessage.trim() && attachments.length === 0) || !activeConversation) return;
+
+    const messageContent = newMessage.trim() || (
+      attachments.length > 0 
+        ? (language === "ar" ? `📎 ${attachments.length} مرفقات` : `📎 ${attachments.length} attachment(s)`)
+        : ""
+    );
 
     const updatedConversations = conversations.map(conv => {
       if (conv.id === activeConversation) {
         return {
           ...conv,
-          lastMessage: newMessage,
+          lastMessage: messageContent,
           lastMessageTime: language === "ar" ? "الآن" : "Just now",
           messages: [
             ...conv.messages,
@@ -259,6 +290,7 @@ const Messages = () => {
               }),
               isOwn: true,
               read: false,
+              attachments: attachments.length > 0 ? [...attachments] : undefined,
             },
           ],
         };
@@ -268,10 +300,56 @@ const Messages = () => {
 
     setConversations(updatedConversations);
     setNewMessage("");
+    setAttachments([]);
     toast({
       title: t("messages.messageSent"),
       description: t("messages.messageSentDesc"),
     });
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: "image" | "document") => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newAttachments: Attachment[] = [];
+    
+    Array.from(files).forEach((file, index) => {
+      const isImage = file.type.startsWith("image/");
+      const url = URL.createObjectURL(file);
+      const sizeKB = Math.round(file.size / 1024);
+      const sizeStr = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${sizeKB} KB`;
+      
+      newAttachments.push({
+        id: Date.now() + index,
+        name: file.name,
+        type: isImage ? "image" : (file.type.includes("pdf") || file.type.includes("document") ? "document" : "file"),
+        url,
+        size: sizeStr,
+      });
+    });
+
+    setAttachments(prev => [...prev, ...newAttachments]);
+    setShowAttachmentMenu(false);
+    
+    // Reset file input
+    if (e.target) {
+      e.target.value = "";
+    }
+  };
+
+  const removeAttachment = (id: number) => {
+    setAttachments(prev => prev.filter(a => a.id !== id));
+  };
+
+  const getAttachmentIcon = (type: "image" | "document" | "file") => {
+    switch (type) {
+      case "image":
+        return <Image className="w-4 h-4" />;
+      case "document":
+        return <FileText className="w-4 h-4" />;
+      default:
+        return <File className="w-4 h-4" />;
+    }
   };
 
   const toggleStar = (id: number) => {
@@ -490,7 +568,54 @@ const Messages = () => {
                           : "bg-secondary text-foreground rounded-bl-sm"
                       }`}
                     >
-                      <p className="text-sm">{message.content}</p>
+                      {/* Attachments */}
+                      {message.attachments && message.attachments.length > 0 && (
+                        <div className="mb-2 space-y-2">
+                          {message.attachments.map((attachment) => (
+                            <div key={attachment.id}>
+                              {attachment.type === "image" ? (
+                                <div 
+                                  className="relative cursor-pointer group"
+                                  onClick={() => setPreviewImage(attachment.url)}
+                                >
+                                  <img
+                                    src={attachment.url}
+                                    alt={attachment.name}
+                                    className="rounded-lg max-w-full max-h-48 object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                    <span className="text-white text-sm">{t("messages.viewImage")}</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div 
+                                  className={`flex items-center gap-2 p-2 rounded-lg ${
+                                    message.isOwn ? "bg-primary-foreground/10" : "bg-background/50"
+                                  }`}
+                                >
+                                  {getAttachmentIcon(attachment.type)}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium truncate">{attachment.name}</p>
+                                    <p className={`text-xs ${message.isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                                      {attachment.size}
+                                    </p>
+                                  </div>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-6 w-6 shrink-0"
+                                    onClick={() => window.open(attachment.url, "_blank")}
+                                  >
+                                    <Download className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {message.content && <p className="text-sm">{message.content}</p>}
                       <div className={`flex items-center gap-1 mt-1 ${message.isOwn ? "justify-end" : "justify-start"}`}>
                         <span className={`text-xs ${message.isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                           {message.timestamp}
@@ -509,11 +634,95 @@ const Messages = () => {
               </div>
 
               {/* Message Input */}
-              <div className="p-4 border-t border-border/50 bg-card">
+              <div className="p-4 border-t border-border/50 bg-card space-y-3">
+                {/* Attachments Preview */}
+                {attachments.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {attachments.map((attachment) => (
+                      <div
+                        key={attachment.id}
+                        className="relative group"
+                      >
+                        {attachment.type === "image" ? (
+                          <div className="relative">
+                            <img
+                              src={attachment.url}
+                              alt={attachment.name}
+                              className="w-16 h-16 object-cover rounded-lg border border-border"
+                            />
+                            <button
+                              onClick={() => removeAttachment(attachment.id)}
+                              className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="relative flex items-center gap-2 px-3 py-2 bg-secondary rounded-lg">
+                            {getAttachmentIcon(attachment.type)}
+                            <span className="text-sm max-w-[100px] truncate">{attachment.name}</span>
+                            <button
+                              onClick={() => removeAttachment(attachment.id)}
+                              className="w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
                 <div className="flex items-end gap-2">
-                  <Button size="icon" variant="ghost" className="shrink-0">
-                    <Paperclip className="w-5 h-5" />
-                  </Button>
+                  {/* Hidden file inputs */}
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleFileSelect(e, "image")}
+                  />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleFileSelect(e, "document")}
+                  />
+                  
+                  {/* Attachment Button with Menu */}
+                  <div className="relative shrink-0">
+                    <Button 
+                      size="icon" 
+                      variant="ghost"
+                      onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
+                    >
+                      <Paperclip className="w-5 h-5" />
+                    </Button>
+                    
+                    {showAttachmentMenu && (
+                      <div className={`absolute bottom-full mb-2 ${isRTL ? 'right-0' : 'left-0'} bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-[160px] z-10`}>
+                        <button
+                          onClick={() => imageInputRef.current?.click()}
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-secondary transition-colors text-start"
+                        >
+                          <Image className="w-4 h-4 text-primary" />
+                          <span className="text-sm">{t("messages.attachImage")}</span>
+                        </button>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-secondary transition-colors text-start"
+                        >
+                          <FileText className="w-4 h-4 text-primary" />
+                          <span className="text-sm">{t("messages.attachFile")}</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  
                   <Textarea
                     placeholder={t("messages.typeMessage")}
                     value={newMessage}
@@ -531,7 +740,7 @@ const Messages = () => {
                     size="icon"
                     variant="hero"
                     onClick={handleSendMessage}
-                    disabled={!newMessage.trim()}
+                    disabled={!newMessage.trim() && attachments.length === 0}
                     className="shrink-0"
                   >
                     <Send className={`w-5 h-5 ${isRTL ? "rotate-180" : ""}`} />
@@ -613,6 +822,24 @@ const Messages = () => {
           </div>
         </div>
       )}
+
+      {/* Image Preview Dialog */}
+      <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden">
+          <DialogHeader className="p-4 pb-0">
+            <DialogTitle>{t("messages.imagePreview")}</DialogTitle>
+          </DialogHeader>
+          <div className="p-4">
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="w-full h-auto max-h-[70vh] object-contain rounded-lg"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

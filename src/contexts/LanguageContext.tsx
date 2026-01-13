@@ -653,6 +653,10 @@ const translations = {
     "messages.messagePlaceholder": "Write your message here...",
     "messages.cancel": "Cancel",
     "messages.send": "Send",
+    "messages.attachImage": "Attach Image",
+    "messages.attachFile": "Attach File",
+    "messages.viewImage": "View Image",
+    "messages.imagePreview": "Image Preview",
     "dashboard.messages": "Messages",
   },
   ar: {
@@ -1298,6 +1302,10 @@ const translations = {
     "messages.messagePlaceholder": "اكتب رسالتك هنا...",
     "messages.cancel": "إلغاء",
     "messages.send": "إرسال",
+    "messages.attachImage": "إرفاق صورة",
+    "messages.attachFile": "إرفاق ملف",
+    "messages.viewImage": "عرض الصورة",
+    "messages.imagePreview": "معاينة الصورة",
     "dashboard.messages": "الرسائل",
   },
 };
