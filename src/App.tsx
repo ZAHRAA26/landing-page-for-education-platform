@@ -31,6 +31,7 @@ import StudentManagement from "./pages/StudentManagement";
 import Notifications from "./pages/Notifications";
 import Messages from "./pages/Messages";
 import Certificates from "./pages/Certificates";
+import CourseProgress from "./pages/CourseProgress";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/certificates" element={<Certificates />} />
+              <Route path="/course-progress/:id" element={<CourseProgress />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

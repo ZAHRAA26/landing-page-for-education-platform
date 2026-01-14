@@ -690,6 +690,22 @@ const translations = {
     "certificates.shareText": "I just completed the course:",
     "certificates.linkCopied": "Link Copied!",
     "certificates.linkCopiedDesc": "Certificate link copied to clipboard.",
+    
+    // Course Progress
+    "progress.backToDashboard": "Back to Dashboard",
+    "progress.by": "by",
+    "progress.progress": "Progress",
+    "progress.lessonsCompleted": "lessons completed",
+    "progress.lessons": "lessons",
+    "progress.courseCompleted": "Course Completed!",
+    "progress.continueLesson": "Continue Lesson",
+    "progress.curriculum": "Course Curriculum",
+    "progress.completed": "completed",
+    "progress.markComplete": "Mark Complete",
+    "progress.done": "Done",
+    "progress.lessonCompleted": "Lesson Completed!",
+    "progress.lessonCompletedDesc": "Great job! Keep up the good work.",
+    "progress.trackProgress": "Track Progress",
   },
   ar: {
     // Navbar
@@ -1371,6 +1387,22 @@ const translations = {
     "certificates.shareText": "لقد أكملت للتو دورة:",
     "certificates.linkCopied": "تم نسخ الرابط!",
     "certificates.linkCopiedDesc": "تم نسخ رابط الشهادة إلى الحافظة.",
+    
+    // Course Progress (Arabic)
+    "progress.backToDashboard": "العودة إلى لوحة التحكم",
+    "progress.by": "بواسطة",
+    "progress.progress": "التقدم",
+    "progress.lessonsCompleted": "درس مكتمل",
+    "progress.lessons": "درس",
+    "progress.courseCompleted": "تم إكمال الدورة!",
+    "progress.continueLesson": "متابعة الدرس",
+    "progress.curriculum": "منهج الدورة",
+    "progress.completed": "مكتمل",
+    "progress.markComplete": "تحديد كمكتمل",
+    "progress.done": "تم",
+    "progress.lessonCompleted": "تم إكمال الدرس!",
+    "progress.lessonCompletedDesc": "أحسنت! واصل العمل الجيد.",
+    "progress.trackProgress": "تتبع التقدم",
   },
 };
 
