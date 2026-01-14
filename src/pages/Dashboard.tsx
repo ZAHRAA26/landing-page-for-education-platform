@@ -730,10 +730,17 @@ const EnrolledCourseCard = ({
         <p className="text-xs text-muted-foreground">
           {t("dashboard.next")} <span className="text-foreground">{nextLesson}</span>
         </p>
-        <Button size="sm" variant="hero">
-          <Play className="w-4 h-4" />
-          {t("dashboard.continue")}
-        </Button>
+        <div className="flex gap-2">
+          <Link to={`/course-progress/${id}`}>
+            <Button size="sm" variant="outline">
+              {t("progress.trackProgress")}
+            </Button>
+          </Link>
+          <Button size="sm" variant="hero">
+            <Play className="w-4 h-4" />
+            {t("dashboard.continue")}
+          </Button>
+        </div>
       </div>
     </div>
   </div>
