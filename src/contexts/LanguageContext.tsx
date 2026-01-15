@@ -657,6 +657,9 @@ const translations = {
     "messages.attachFile": "Attach File",
     "messages.viewImage": "View Image",
     "messages.imagePreview": "Image Preview",
+    "messages.recording": "Recording...",
+    "messages.voiceMessage": "Voice message",
+    "messages.voiceMessageSent": "Your voice message has been sent successfully.",
     "dashboard.messages": "Messages",
     
     // Certificates
@@ -1384,6 +1387,9 @@ const translations = {
     "messages.attachFile": "إرفاق ملف",
     "messages.viewImage": "عرض الصورة",
     "messages.imagePreview": "معاينة الصورة",
+    "messages.recording": "جاري التسجيل...",
+    "messages.voiceMessage": "رسالة صوتية",
+    "messages.voiceMessageSent": "تم إرسال رسالتك الصوتية بنجاح.",
     "dashboard.messages": "الرسائل",
     
     // Certificates (Arabic)

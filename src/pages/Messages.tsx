@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,10 @@ import {
   File,
   X,
   Download,
+  Mic,
+  Square,
+  Play,
+  Pause,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
@@ -37,9 +41,10 @@ import { useToast } from "@/hooks/use-toast";
 interface Attachment {
   id: number;
   name: string;
-  type: "image" | "document" | "file";
+  type: "image" | "document" | "file" | "voice";
   url: string;
   size: string;
+  duration?: number;
 }
 
 interface Message {
@@ -79,6 +84,18 @@ const Messages = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  
+  // Voice recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isPlayingRecording, setIsPlayingRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const [playingVoiceId, setPlayingVoiceId] = useState<number | null>(null);
 
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
 
@@ -341,16 +358,183 @@ const Messages = () => {
     setAttachments(prev => prev.filter(a => a.id !== id));
   };
 
-  const getAttachmentIcon = (type: "image" | "document" | "file") => {
+  const getAttachmentIcon = (type: "image" | "document" | "file" | "voice") => {
     switch (type) {
       case "image":
         return <Image className="w-4 h-4" />;
       case "document":
         return <FileText className="w-4 h-4" />;
+      case "voice":
+        return <Mic className="w-4 h-4" />;
       default:
         return <File className="w-4 h-4" />;
     }
   };
+
+  // Voice recording functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        setAudioBlob(blob);
+        const url = URL.createObjectURL(blob);
+        setAudioUrl(url);
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+      
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } catch (error) {
+      console.error("Error accessing microphone:", error);
+      toast({
+        title: language === "ar" ? "خطأ" : "Error",
+        description: language === "ar" 
+          ? "لا يمكن الوصول إلى الميكروفون" 
+          : "Cannot access microphone",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+        recordingIntervalRef.current = null;
+      }
+    }
+  };
+
+  const cancelRecording = () => {
+    stopRecording();
+    setAudioBlob(null);
+    setAudioUrl(null);
+    setRecordingTime(0);
+  };
+
+  const sendVoiceMessage = () => {
+    if (!audioBlob || !activeConversation) return;
+
+    const voiceAttachment: Attachment = {
+      id: Date.now(),
+      name: language === "ar" ? "رسالة صوتية" : "Voice message",
+      type: "voice",
+      url: audioUrl!,
+      size: `${Math.round(audioBlob.size / 1024)} KB`,
+      duration: recordingTime,
+    };
+
+    const updatedConversations = conversations.map((conv) => {
+      if (conv.id === activeConversation) {
+        return {
+          ...conv,
+          lastMessage: language === "ar" ? "🎤 رسالة صوتية" : "🎤 Voice message",
+          lastMessageTime: language === "ar" ? "الآن" : "Just now",
+          messages: [
+            ...conv.messages,
+            {
+              id: conv.messages.length + 1,
+              content: "",
+              timestamp: new Date().toLocaleTimeString(
+                language === "ar" ? "ar-SA" : "en-US",
+                {
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true,
+                }
+              ),
+              isOwn: true,
+              read: false,
+              attachments: [voiceAttachment],
+            },
+          ],
+        };
+      }
+      return conv;
+    });
+
+    setConversations(updatedConversations);
+    setAudioBlob(null);
+    setAudioUrl(null);
+    setRecordingTime(0);
+    toast({
+      title: t("messages.messageSent"),
+      description: t("messages.voiceMessageSent"),
+    });
+  };
+
+  const togglePlayRecording = () => {
+    if (!audioUrl) return;
+    
+    if (!audioPlayerRef.current) {
+      audioPlayerRef.current = new Audio(audioUrl);
+      audioPlayerRef.current.onended = () => setIsPlayingRecording(false);
+    }
+
+    if (isPlayingRecording) {
+      audioPlayerRef.current.pause();
+      setIsPlayingRecording(false);
+    } else {
+      audioPlayerRef.current.play();
+      setIsPlayingRecording(true);
+    }
+  };
+
+  const playVoiceMessage = (attachmentId: number, url: string) => {
+    if (playingVoiceId === attachmentId) {
+      // Stop playing
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+        audioPlayerRef.current = null;
+      }
+      setPlayingVoiceId(null);
+    } else {
+      // Start playing
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+      }
+      audioPlayerRef.current = new Audio(url);
+      audioPlayerRef.current.onended = () => setPlayingVoiceId(null);
+      audioPlayerRef.current.play();
+      setPlayingVoiceId(attachmentId);
+    }
+  };
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+      }
+    };
+  }, []);
 
   const toggleStar = (id: number) => {
     setConversations(prev =>
@@ -587,6 +771,43 @@ const Messages = () => {
                                     <span className="text-white text-sm">{t("messages.viewImage")}</span>
                                   </div>
                                 </div>
+                              ) : attachment.type === "voice" ? (
+                                <div 
+                                  className={`flex items-center gap-3 p-3 rounded-lg min-w-[200px] ${
+                                    message.isOwn ? "bg-primary-foreground/10" : "bg-background/50"
+                                  }`}
+                                >
+                                  <button
+                                    onClick={() => playVoiceMessage(attachment.id, attachment.url)}
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                                      message.isOwn 
+                                        ? "bg-primary-foreground/20 hover:bg-primary-foreground/30" 
+                                        : "bg-primary/10 hover:bg-primary/20"
+                                    }`}
+                                  >
+                                    {playingVoiceId === attachment.id ? (
+                                      <Pause className={`w-5 h-5 ${message.isOwn ? "text-primary-foreground" : "text-primary"}`} />
+                                    ) : (
+                                      <Play className={`w-5 h-5 ${message.isOwn ? "text-primary-foreground" : "text-primary"}`} />
+                                    )}
+                                  </button>
+                                  <div className="flex-1">
+                                    <div className={`h-1 rounded-full ${message.isOwn ? "bg-primary-foreground/30" : "bg-primary/30"}`}>
+                                      <div 
+                                        className={`h-full rounded-full w-0 ${
+                                          playingVoiceId === attachment.id ? "animate-pulse w-full" : ""
+                                        } ${message.isOwn ? "bg-primary-foreground" : "bg-primary"}`}
+                                        style={{ transition: "width 0.3s" }}
+                                      />
+                                    </div>
+                                    <div className="flex items-center justify-between mt-1">
+                                      <span className={`text-xs ${message.isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                                        {attachment.duration ? formatDuration(attachment.duration) : "0:00"}
+                                      </span>
+                                      <Mic className={`w-3 h-3 ${message.isOwn ? "text-primary-foreground/50" : "text-muted-foreground/50"}`} />
+                                    </div>
+                                  </div>
+                                </div>
                               ) : (
                                 <div 
                                   className={`flex items-center gap-2 p-2 rounded-lg ${
@@ -674,6 +895,53 @@ const Messages = () => {
                   </div>
                 )}
                 
+                {/* Voice Recording UI */}
+                {(isRecording || audioUrl) && (
+                  <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
+                    {isRecording ? (
+                      <>
+                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-sm font-medium text-foreground flex-1">
+                          {t("messages.recording")} {formatDuration(recordingTime)}
+                        </span>
+                        <Button size="sm" variant="ghost" onClick={cancelRecording}>
+                          <X className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={stopRecording}>
+                          <Square className="w-4 h-4 fill-current" />
+                        </Button>
+                      </>
+                    ) : audioUrl ? (
+                      <>
+                        <button
+                          onClick={togglePlayRecording}
+                          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 hover:bg-primary/20 transition-colors"
+                        >
+                          {isPlayingRecording ? (
+                            <Pause className="w-5 h-5 text-primary" />
+                          ) : (
+                            <Play className="w-5 h-5 text-primary" />
+                          )}
+                        </button>
+                        <div className="flex-1">
+                          <div className="h-1 bg-primary/30 rounded-full">
+                            <div className={`h-full rounded-full bg-primary ${isPlayingRecording ? "animate-pulse w-full" : "w-0"}`} />
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-1 block">
+                            {formatDuration(recordingTime)}
+                          </span>
+                        </div>
+                        <Button size="sm" variant="ghost" onClick={cancelRecording}>
+                          <X className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="hero" onClick={sendVoiceMessage}>
+                          <Send className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} />
+                        </Button>
+                      </>
+                    ) : null}
+                  </div>
+                )}
+                
                 <div className="flex items-end gap-2">
                   {/* Hidden file inputs */}
                   <input
@@ -699,6 +967,7 @@ const Messages = () => {
                       size="icon" 
                       variant="ghost"
                       onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
+                      disabled={isRecording || !!audioUrl}
                     >
                       <Paperclip className="w-5 h-5" />
                     </Button>
@@ -723,6 +992,21 @@ const Messages = () => {
                     )}
                   </div>
                   
+                  {/* Voice Recording Button */}
+                  <Button
+                    size="icon"
+                    variant={isRecording ? "destructive" : "ghost"}
+                    onClick={isRecording ? stopRecording : startRecording}
+                    disabled={!!audioUrl}
+                    className="shrink-0"
+                  >
+                    {isRecording ? (
+                      <Square className="w-5 h-5 fill-current" />
+                    ) : (
+                      <Mic className="w-5 h-5" />
+                    )}
+                  </Button>
+                  
                   <Textarea
                     placeholder={t("messages.typeMessage")}
                     value={newMessage}
@@ -735,12 +1019,13 @@ const Messages = () => {
                     }}
                     className="min-h-[44px] max-h-32 resize-none"
                     rows={1}
+                    disabled={isRecording || !!audioUrl}
                   />
                   <Button
                     size="icon"
                     variant="hero"
                     onClick={handleSendMessage}
-                    disabled={!newMessage.trim() && attachments.length === 0}
+                    disabled={(!newMessage.trim() && attachments.length === 0) || isRecording || !!audioUrl}
                     className="shrink-0"
                   >
                     <Send className={`w-5 h-5 ${isRTL ? "rotate-180" : ""}`} />
