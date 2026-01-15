@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -231,6 +231,35 @@ const Quiz = () => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(quizData.timeLimit * 60);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [timeExpired, setTimeExpired] = useState(false);
+
+  // Auto-submit when time runs out
+  const handleAutoSubmit = useCallback(() => {
+    setTimeExpired(true);
+    setQuizCompleted(true);
+  }, []);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (!quizStarted || quizCompleted) return;
+
+    if (timeRemaining <= 0) {
+      handleAutoSubmit();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quizStarted, quizCompleted, timeRemaining, handleAutoSubmit]);
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (quizCompleted) return;
@@ -263,6 +292,8 @@ const Quiz = () => {
     setCurrentQuestion(0);
     setShowExplanation(false);
     setTimeRemaining(quizData.timeLimit * 60);
+    setTimeExpired(false);
+    setQuizStarted(true);
   };
 
   const calculateScore = () => {
@@ -370,10 +401,10 @@ const Quiz = () => {
                   )}
                 </div>
                 <CardTitle className="text-2xl">
-                  {passed ? t("quiz.congratulations") : t("quiz.tryAgain")}
+                  {timeExpired ? t("quiz.timeExpired") : passed ? t("quiz.congratulations") : t("quiz.tryAgain")}
                 </CardTitle>
                 <CardDescription>
-                  {passed ? t("quiz.passedMessage") : t("quiz.failedMessage")}
+                  {timeExpired ? t("quiz.timeExpiredMessage") : passed ? t("quiz.passedMessage") : t("quiz.failedMessage")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
