@@ -18,6 +18,9 @@ import {
   HelpCircle,
   Trophy,
   Target,
+  Pause,
+  Play,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Card,
@@ -30,6 +33,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -232,6 +236,9 @@ const Quiz = () => {
   const [timeRemaining, setTimeRemaining] = useState(quizData.timeLimit * 60);
   const [quizStarted, setQuizStarted] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showPauseConfirm, setShowPauseConfirm] = useState(false);
+  const [showResumeConfirm, setShowResumeConfirm] = useState(false);
 
   // Auto-submit when time runs out
   const handleAutoSubmit = useCallback(() => {
@@ -241,7 +248,7 @@ const Quiz = () => {
 
   // Countdown timer effect
   useEffect(() => {
-    if (!quizStarted || quizCompleted) return;
+    if (!quizStarted || quizCompleted || isPaused) return;
 
     if (timeRemaining <= 0) {
       handleAutoSubmit();
@@ -259,7 +266,25 @@ const Quiz = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [quizStarted, quizCompleted, timeRemaining, handleAutoSubmit]);
+  }, [quizStarted, quizCompleted, timeRemaining, isPaused, handleAutoSubmit]);
+
+  const handlePauseClick = () => {
+    setShowPauseConfirm(true);
+  };
+
+  const confirmPause = () => {
+    setIsPaused(true);
+    setShowPauseConfirm(false);
+  };
+
+  const handleResumeClick = () => {
+    setShowResumeConfirm(true);
+  };
+
+  const confirmResume = () => {
+    setIsPaused(false);
+    setShowResumeConfirm(false);
+  };
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (quizCompleted) return;
@@ -294,6 +319,7 @@ const Quiz = () => {
     setTimeRemaining(quizData.timeLimit * 60);
     setTimeExpired(false);
     setQuizStarted(true);
+    setIsPaused(false);
   };
 
   const calculateScore = () => {
@@ -500,9 +526,30 @@ const Quiz = () => {
           <div className="bg-card rounded-2xl border border-border/50 p-4 mb-6">
             <div className="flex items-center justify-between mb-3">
               <h1 className="font-bold text-foreground">{quizData.title}</h1>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="w-4 h-4" />
-                <span className="font-mono">{formatTime(timeRemaining)}</span>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant={isPaused ? "default" : "outline"}
+                  size="sm"
+                  onClick={isPaused ? handleResumeClick : handlePauseClick}
+                  className="gap-2"
+                >
+                  {isPaused ? (
+                    <>
+                      <Play className="w-4 h-4" />
+                      {t("quiz.resume")}
+                    </>
+                  ) : (
+                    <>
+                      <Pause className="w-4 h-4" />
+                      {t("quiz.pause")}
+                    </>
+                  )}
+                </Button>
+                <div className={`flex items-center gap-2 ${isPaused ? "text-amber-500" : "text-muted-foreground"}`}>
+                  <Clock className="w-4 h-4" />
+                  <span className="font-mono">{formatTime(timeRemaining)}</span>
+                  {isPaused && <span className="text-xs">({t("quiz.paused")})</span>}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -613,6 +660,79 @@ const Quiz = () => {
               </DialogHeader>
             </DialogContent>
           </Dialog>
+
+          {/* Pause Confirmation Dialog */}
+          <Dialog open={showPauseConfirm} onOpenChange={setShowPauseConfirm}>
+            <DialogContent>
+              <DialogHeader>
+                <div className="mx-auto w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
+                  <Pause className="w-6 h-6 text-amber-500" />
+                </div>
+                <DialogTitle className="text-center">{t("quiz.pauseConfirmTitle")}</DialogTitle>
+                <DialogDescription className="text-center">
+                  {t("quiz.pauseConfirmMessage")}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="flex gap-2 sm:gap-2">
+                <Button variant="outline" onClick={() => setShowPauseConfirm(false)} className="flex-1">
+                  {t("quiz.cancel")}
+                </Button>
+                <Button onClick={confirmPause} className="flex-1 gap-2">
+                  <Pause className="w-4 h-4" />
+                  {t("quiz.confirmPause")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Resume Confirmation Dialog */}
+          <Dialog open={showResumeConfirm} onOpenChange={setShowResumeConfirm}>
+            <DialogContent>
+              <DialogHeader>
+                <div className="mx-auto w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mb-4">
+                  <Play className="w-6 h-6 text-green-500" />
+                </div>
+                <DialogTitle className="text-center">{t("quiz.resumeConfirmTitle")}</DialogTitle>
+                <DialogDescription className="text-center">
+                  {t("quiz.resumeConfirmMessage")}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="flex gap-2 sm:gap-2">
+                <Button variant="outline" onClick={() => setShowResumeConfirm(false)} className="flex-1">
+                  {t("quiz.cancel")}
+                </Button>
+                <Button onClick={confirmResume} className="flex-1 gap-2">
+                  <Play className="w-4 h-4" />
+                  {t("quiz.confirmResume")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Paused Overlay */}
+          {isPaused && (
+            <div className="fixed inset-0 z-40 bg-background/95 backdrop-blur-sm flex items-center justify-center">
+              <Card className="max-w-md mx-4 text-center">
+                <CardHeader>
+                  <div className="mx-auto w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
+                    <Pause className="w-8 h-8 text-amber-500" />
+                  </div>
+                  <CardTitle>{t("quiz.quizPaused")}</CardTitle>
+                  <CardDescription>{t("quiz.pausedMessage")}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-center gap-2 text-2xl font-mono text-amber-500">
+                    <Clock className="w-6 h-6" />
+                    {formatTime(timeRemaining)}
+                  </div>
+                  <Button onClick={handleResumeClick} size="lg" className="w-full gap-2">
+                    <Play className="w-5 h-5" />
+                    {t("quiz.resumeQuiz")}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </main>
 
