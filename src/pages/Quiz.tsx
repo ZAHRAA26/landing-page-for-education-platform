@@ -239,12 +239,64 @@ const Quiz = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
   const [showResumeConfirm, setShowResumeConfirm] = useState(false);
+  const [showTimeWarning, setShowTimeWarning] = useState(false);
+  const [hasPlayedWarning, setHasPlayedWarning] = useState(false);
 
   // Auto-submit when time runs out
   const handleAutoSubmit = useCallback(() => {
     setTimeExpired(true);
     setQuizCompleted(true);
   }, []);
+
+  // Play warning sound
+  const playWarningSound = useCallback(() => {
+    if (hasPlayedWarning) return;
+    
+    // Create audio context for beep sound
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+    
+    // Play 3 beeps
+    setTimeout(() => {
+      const osc2 = audioContext.createOscillator();
+      const gain2 = audioContext.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioContext.destination);
+      osc2.frequency.value = 800;
+      osc2.type = 'sine';
+      gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      osc2.start(audioContext.currentTime);
+      osc2.stop(audioContext.currentTime + 0.5);
+    }, 600);
+    
+    setTimeout(() => {
+      const osc3 = audioContext.createOscillator();
+      const gain3 = audioContext.createGain();
+      osc3.connect(gain3);
+      gain3.connect(audioContext.destination);
+      osc3.frequency.value = 1000;
+      osc3.type = 'sine';
+      gain3.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      osc3.start(audioContext.currentTime);
+      osc3.stop(audioContext.currentTime + 0.5);
+    }, 1200);
+    
+    setHasPlayedWarning(true);
+  }, [hasPlayedWarning]);
 
   // Countdown timer effect
   useEffect(() => {
@@ -253,6 +305,12 @@ const Quiz = () => {
     if (timeRemaining <= 0) {
       handleAutoSubmit();
       return;
+    }
+
+    // Show warning when 1 minute or less remaining
+    if (timeRemaining <= 60 && !showTimeWarning) {
+      setShowTimeWarning(true);
+      playWarningSound();
     }
 
     const timer = setInterval(() => {
@@ -266,7 +324,7 @@ const Quiz = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [quizStarted, quizCompleted, timeRemaining, isPaused, handleAutoSubmit]);
+  }, [quizStarted, quizCompleted, timeRemaining, isPaused, handleAutoSubmit, showTimeWarning, playWarningSound]);
 
   const handlePauseClick = () => {
     setShowPauseConfirm(true);
@@ -320,6 +378,8 @@ const Quiz = () => {
     setTimeExpired(false);
     setQuizStarted(true);
     setIsPaused(false);
+    setShowTimeWarning(false);
+    setHasPlayedWarning(false);
   };
 
   const calculateScore = () => {
@@ -545,10 +605,23 @@ const Quiz = () => {
                     </>
                   )}
                 </Button>
-                <div className={`flex items-center gap-2 ${isPaused ? "text-amber-500" : "text-muted-foreground"}`}>
-                  <Clock className="w-4 h-4" />
-                  <span className="font-mono">{formatTime(timeRemaining)}</span>
+                <div className={`flex items-center gap-2 ${
+                  showTimeWarning 
+                    ? "text-red-500 animate-pulse" 
+                    : isPaused 
+                      ? "text-amber-500" 
+                      : "text-muted-foreground"
+                }`}>
+                  <Clock className={`w-4 h-4 ${showTimeWarning ? "animate-bounce" : ""}`} />
+                  <span className={`font-mono ${showTimeWarning ? "font-bold text-lg" : ""}`}>
+                    {formatTime(timeRemaining)}
+                  </span>
                   {isPaused && <span className="text-xs">({t("quiz.paused")})</span>}
+                  {showTimeWarning && !isPaused && (
+                    <span className="text-xs font-medium bg-red-500/10 px-2 py-0.5 rounded-full">
+                      {t("quiz.hurryUp")}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
