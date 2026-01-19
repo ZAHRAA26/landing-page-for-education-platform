@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+# EduLearn – Landing & Authenticated Platform
 
-## Project info
+This project turns the EduLearn landing page into a functioning education platform with a minimal but complete authentication system. The existing UI is preserved while adding a production-ready Express backend and frontend auth flows.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Stack
+- Frontend: Vite + React + TypeScript + Tailwind + shadcn/ui
+- Backend: Node.js + Express + SQLite (better-sqlite3) + JWT (httpOnly cookies)
 
-## How can I edit this code?
+## Project Structure
+- `src/` – React app (landing, courses, dashboard, etc.)
+- `server/` – Express API with SQLite persistence
+- `data/edu-platform.db` – Auto-created SQLite database
+- `env.frontend.example` – Frontend environment template
+- `server/env.example` – Backend environment template
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+## Quick Start
+### 1) Frontend
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+cp env.frontend.example .env      # set VITE_API_URL if needed
+npm install
 npm run dev
+# http://localhost:5173
 ```
 
-**Edit a file directly in GitHub**
+### 2) Backend
+```sh
+cd server
+cp env.example .env               # adjust CLIENT_URL/JWT_SECRET/PORT
+npm install
+npm run dev
+# http://localhost:4000
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+The frontend expects the backend at `http://localhost:4000` (configured via `VITE_API_URL`).
 
-**Use GitHub Codespaces**
+## Auth Flow
+- Register/Login at `/auth`; uses email + password.
+- JWT is stored in an httpOnly, same-site cookie for safety.
+- Protected routes: dashboard, course creation/editing, analytics, messaging, notifications, course progress, and reports redirect unauthenticated users to `/auth`.
+- Navbar reflects auth state (Dashboard + Logout when signed in).
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## API Overview
+- `GET /api/health` – health check
+- `POST /api/auth/register` – `{ name, email, password }`
+- `POST /api/auth/login` – `{ email, password }`
+- `POST /api/auth/logout` – clears session cookie
+- `GET /api/auth/me` – returns current user (requires auth)
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Notes
+- SQLite DB is file-based; delete `data/edu-platform.db` to reset locally.
+- Cookies are secure-only in production; configure `CLIENT_URL` if the frontend runs elsewhere.
+- Keep landing content and course pages as-is; only auth-related UX was added.

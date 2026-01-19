@@ -26,10 +26,12 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import NotificationDropdown, { Notification } from "@/components/NotificationDropdown";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"student" | "teacher" | "admin">("student");
   const { t, isRTL, language } = useLanguage();
+  const { user, logout } = useAuth();
 
   const enrolledCourses = [
     {
@@ -154,6 +156,8 @@ const Dashboard = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
+  const userInitial = user?.name?.[0]?.toUpperCase() ?? (language === "ar" ? "أ" : "U");
+
   const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
 
   return (
@@ -181,7 +185,7 @@ const Dashboard = () => {
                 <Settings className="w-5 h-5" />
               </Link>
               <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold">
-                {language === "ar" ? "أ" : "J"}
+                {userInitial}
               </div>
             </div>
           </div>
@@ -240,13 +244,13 @@ const Dashboard = () => {
             <SidebarLink icon={<User />} label={t("dashboard.profile")} />
             
             <div className="pt-4 border-t border-border mt-4">
-              <Link 
-                to="/"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              <button
+                onClick={logout}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
               >
                 <LogOut className="w-5 h-5" />
                 <span className="font-medium">{t("dashboard.logout")}</span>
-              </Link>
+              </button>
             </div>
           </nav>
         </aside>

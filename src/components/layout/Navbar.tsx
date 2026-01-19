@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, GraduationCap } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
   const { t } = useLanguage();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const navLinks = [
     { label: t("nav.courses"), href: "/courses" },
@@ -18,6 +21,11 @@ export const Navbar = () => {
     { label: t("nav.about"), href: "/about" },
     { label: t("nav.contact"), href: "/contact" },
   ];
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
 
   const getHref = (href: string) => {
     if (href.startsWith("/#") && isHomePage) {
@@ -67,12 +75,25 @@ export const Navbar = () => {
           <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
             <LanguageSwitcher />
-            <Button variant="ghost" size="default" asChild>
-              <Link to="/auth">{t("nav.login")}</Link>
-            </Button>
-            <Button variant="hero" size="default" asChild>
-              <Link to="/auth">{t("nav.getStarted")}</Link>
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button variant="ghost" size="default" asChild>
+                  <Link to="/dashboard">{user?.name ?? "Dashboard"}</Link>
+                </Button>
+                <Button variant="outline" size="default" onClick={handleLogout}>
+                  {t("dashboard.logout")}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="default" asChild>
+                  <Link to="/auth">{t("nav.login")}</Link>
+                </Button>
+                <Button variant="hero" size="default" asChild>
+                  <Link to="/auth">{t("nav.getStarted")}</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -115,12 +136,34 @@ export const Navbar = () => {
                   <ThemeToggle />
                   <LanguageSwitcher />
                 </div>
-                <Button variant="ghost" className="w-full justify-center" asChild>
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.login")}</Link>
-                </Button>
-                <Button variant="hero" className="w-full justify-center" asChild>
-                  <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.getStarted")}</Link>
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <Button variant="ghost" className="w-full justify-center" asChild>
+                      <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                        {user?.name ?? "Dashboard"}
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-center"
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleLogout();
+                      }}
+                    >
+                      {t("dashboard.logout")}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" className="w-full justify-center" asChild>
+                      <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.login")}</Link>
+                    </Button>
+                    <Button variant="hero" className="w-full justify-center" asChild>
+                      <Link to="/auth" onClick={() => setIsOpen(false)}>{t("nav.getStarted")}</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

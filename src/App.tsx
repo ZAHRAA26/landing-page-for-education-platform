@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -43,45 +45,117 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/courses/:id" element={<CourseDetail />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogPost />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/help" element={<HelpCenter />} />
-              <Route path="/press" element={<Press />} />
-              <Route path="/become-instructor" element={<BecomeInstructor />} />
-              <Route path="/enterprise" element={<Enterprise />} />
-              <Route path="/mobile-app" element={<MobileApp />} />
-              <Route path="/cookies" element={<CookiePolicy />} />
-              <Route path="/create-course" element={<CreateCourse />} />
-              <Route path="/edit-course/:id" element={<EditCourse />} />
-              <Route path="/course-preview/:id" element={<CoursePreview />} />
-              <Route path="/teacher-analytics" element={<TeacherAnalytics />} />
-              <Route path="/student-management" element={<StudentManagement />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/certificates" element={<Certificates />} />
-              <Route path="/course-progress/:id" element={<CourseProgress />} />
-              <Route path="/quiz/:id" element={<Quiz />} />
-              <Route path="/student-report" element={<StudentReport />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:id" element={<CourseDetail />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/about" element={<About />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:id" element={<BlogPost />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/help" element={<HelpCenter />} />
+                <Route path="/press" element={<Press />} />
+                <Route path="/become-instructor" element={<BecomeInstructor />} />
+                <Route path="/enterprise" element={<Enterprise />} />
+                <Route path="/mobile-app" element={<MobileApp />} />
+                <Route path="/cookies" element={<CookiePolicy />} />
+                <Route
+                  path="/create-course"
+                  element={
+                    <ProtectedRoute>
+                      <CreateCourse />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/edit-course/:id"
+                  element={
+                    <ProtectedRoute>
+                      <EditCourse />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/course-preview/:id"
+                  element={
+                    <ProtectedRoute>
+                      <CoursePreview />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/teacher-analytics"
+                  element={
+                    <ProtectedRoute>
+                      <TeacherAnalytics />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/student-management"
+                  element={
+                    <ProtectedRoute>
+                      <StudentManagement />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/notifications"
+                  element={
+                    <ProtectedRoute>
+                      <Notifications />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute>
+                      <Messages />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/certificates" element={<Certificates />} />
+                <Route
+                  path="/course-progress/:id"
+                  element={
+                    <ProtectedRoute>
+                      <CourseProgress />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/quiz/:id" element={<Quiz />} />
+                <Route
+                  path="/student-report"
+                  element={
+                    <ProtectedRoute>
+                      <StudentReport />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>

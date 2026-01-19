@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,24 +17,46 @@ const Auth = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { login, register, isAuthenticated } = useAuth();
+  const redirectPath = (location.state as { from?: string })?.from ?? "/dashboard";
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(redirectPath, { replace: true });
+    }
+  }, [isAuthenticated, navigate, redirectPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate auth - replace with actual Supabase auth when Cloud is enabled
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      if (isLogin) {
+        await login(formData.email, formData.password);
+      } else {
+        await register(formData.name, formData.email, formData.password);
+      }
+
       toast({
         title: isLogin ? "Welcome back!" : "Account created!",
-        description: isLogin 
-          ? "You have successfully logged in." 
-          : "Please check your email to verify your account.",
+        description: isLogin
+          ? "You have successfully logged in."
+          : "You can now access your dashboard.",
       });
-      // Navigate to dashboard after login
-      navigate("/dashboard");
-    }, 1000);
+
+      navigate(redirectPath, { replace: true });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to sign in";
+      toast({
+        title: "Authentication failed",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
