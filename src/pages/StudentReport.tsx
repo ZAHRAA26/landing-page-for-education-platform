@@ -195,25 +195,28 @@ const StudentReport = () => {
     },
   ];
 
-  // Performance over time data
+  // Performance over time data with class average comparison
   const performanceData = [
-    { month: language === "ar" ? "يناير" : "Jan", score: 78, quizzes: 3 },
-    { month: language === "ar" ? "فبراير" : "Feb", score: 82, quizzes: 3 },
-    { month: language === "ar" ? "مارس" : "Mar", score: 85, quizzes: 4 },
-    { month: language === "ar" ? "أبريل" : "Apr", score: 88, quizzes: 2 },
-    { month: language === "ar" ? "مايو" : "May", score: 91, quizzes: 5 },
-    { month: language === "ar" ? "يونيو" : "Jun", score: 87, quizzes: 3 },
+    { month: language === "ar" ? "يناير" : "Jan", score: 78, classAverage: 72, quizzes: 3 },
+    { month: language === "ar" ? "فبراير" : "Feb", score: 82, classAverage: 74, quizzes: 3 },
+    { month: language === "ar" ? "مارس" : "Mar", score: 85, classAverage: 75, quizzes: 4 },
+    { month: language === "ar" ? "أبريل" : "Apr", score: 88, classAverage: 76, quizzes: 2 },
+    { month: language === "ar" ? "مايو" : "May", score: 91, classAverage: 78, quizzes: 5 },
+    { month: language === "ar" ? "يونيو" : "Jun", score: 87, classAverage: 77, quizzes: 3 },
   ];
 
-  // Subject performance data
+  // Subject performance data with class average comparison
   const subjectData = [
-    { subject: language === "ar" ? "JavaScript" : "JavaScript", score: 85, fullMark: 100 },
-    { subject: language === "ar" ? "React" : "React", score: 78, fullMark: 100 },
-    { subject: language === "ar" ? "CSS" : "CSS", score: 92, fullMark: 100 },
-    { subject: language === "ar" ? "Node.js" : "Node.js", score: 70, fullMark: 100 },
-    { subject: language === "ar" ? "TypeScript" : "TypeScript", score: 88, fullMark: 100 },
-    { subject: language === "ar" ? "قواعد البيانات" : "Database", score: 80, fullMark: 100 },
+    { subject: language === "ar" ? "JavaScript" : "JavaScript", score: 85, classAverage: 72, fullMark: 100 },
+    { subject: language === "ar" ? "React" : "React", score: 78, classAverage: 70, fullMark: 100 },
+    { subject: language === "ar" ? "CSS" : "CSS", score: 92, classAverage: 80, fullMark: 100 },
+    { subject: language === "ar" ? "Node.js" : "Node.js", score: 70, classAverage: 68, fullMark: 100 },
+    { subject: language === "ar" ? "TypeScript" : "TypeScript", score: 88, classAverage: 73, fullMark: 100 },
+    { subject: language === "ar" ? "قواعد البيانات" : "Database", score: 80, classAverage: 75, fullMark: 100 },
   ];
+
+  // Class average statistics
+  const classAverageScore = 75;
 
   // Score distribution data
   const scoreDistribution = [
@@ -238,8 +241,12 @@ const StudentReport = () => {
 
   const chartConfig = {
     score: {
-      label: t("report.score"),
+      label: t("report.yourScore"),
       color: "hsl(var(--chart-1))",
+    },
+    classAverage: {
+      label: t("report.classAverage"),
+      color: "hsl(var(--chart-3))",
     },
     quizzes: {
       label: t("report.quizzes"),
@@ -385,10 +392,21 @@ const StudentReport = () => {
                 <CardHeader>
                   <CardTitle>{t("report.performanceOverTime")}</CardTitle>
                   <CardDescription>
-                    {t("report.performanceDesc")}
+                    {t("report.performanceDescComparison")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "hsl(var(--chart-1))" }} />
+                      <span className="text-sm text-muted-foreground">{t("report.yourScore")}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "hsl(var(--chart-3))" }} />
+                      <span className="text-sm text-muted-foreground">{t("report.classAverage")}</span>
+                    </div>
+                  </div>
                   <ChartContainer config={chartConfig} className="h-[350px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={performanceData}>
@@ -398,11 +416,19 @@ const StudentReport = () => {
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Area
                           type="monotone"
+                          dataKey="classAverage"
+                          stroke="hsl(var(--chart-3))"
+                          fill="hsl(var(--chart-3))"
+                          fillOpacity={0.2}
+                          name={t("report.classAverage")}
+                        />
+                        <Area
+                          type="monotone"
                           dataKey="score"
                           stroke="hsl(var(--chart-1))"
                           fill="hsl(var(--chart-1))"
-                          fillOpacity={0.3}
-                          name={t("report.score")}
+                          fillOpacity={0.4}
+                          name={t("report.yourScore")}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -417,10 +443,21 @@ const StudentReport = () => {
                 <CardHeader>
                   <CardTitle>{t("report.subjectPerformance")}</CardTitle>
                   <CardDescription>
-                    {t("report.subjectDesc")}
+                    {t("report.subjectDescComparison")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "hsl(var(--chart-1))" }} />
+                      <span className="text-sm text-muted-foreground">{t("report.yourScore")}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "hsl(var(--chart-3))" }} />
+                      <span className="text-sm text-muted-foreground">{t("report.classAverage")}</span>
+                    </div>
+                  </div>
                   <div className="grid lg:grid-cols-2 gap-8">
                     <ChartContainer config={chartConfig} className="h-[350px]">
                       <ResponsiveContainer width="100%" height="100%">
@@ -429,12 +466,20 @@ const StudentReport = () => {
                           <PolarAngleAxis dataKey="subject" />
                           <PolarRadiusAxis domain={[0, 100]} />
                           <Radar
-                            name={t("report.score")}
+                            name={t("report.classAverage")}
+                            dataKey="classAverage"
+                            stroke="hsl(var(--chart-3))"
+                            fill="hsl(var(--chart-3))"
+                            fillOpacity={0.3}
+                          />
+                          <Radar
+                            name={t("report.yourScore")}
                             dataKey="score"
                             stroke="hsl(var(--chart-1))"
                             fill="hsl(var(--chart-1))"
                             fillOpacity={0.5}
                           />
+                          <ChartTooltip content={<ChartTooltipContent />} />
                         </RadarChart>
                       </ResponsiveContainer>
                     </ChartContainer>
@@ -443,11 +488,19 @@ const StudentReport = () => {
                         <div key={index} className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span className="font-medium">{subject.subject}</span>
-                            <span className="text-muted-foreground">
-                              {subject.score}%
-                            </span>
+                            <div className="flex gap-4">
+                              <span className="text-primary font-medium">
+                                {t("report.you")}: {subject.score}%
+                              </span>
+                              <span className="text-muted-foreground">
+                                {t("report.avg")}: {subject.classAverage}%
+                              </span>
+                            </div>
                           </div>
-                          <Progress value={subject.score} className="h-2" />
+                          <div className="relative">
+                            <Progress value={subject.classAverage} className="h-2 absolute w-full [&>div]:bg-chart-3" />
+                            <Progress value={subject.score} className="h-2 relative [&>div]:bg-chart-1" style={{ backgroundColor: 'transparent' }} />
+                          </div>
                         </div>
                       ))}
                     </div>
