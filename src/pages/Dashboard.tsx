@@ -21,7 +21,8 @@ import {
   BarChart3,
   Users,
   Eye,
-  Mail
+  Mail,
+  FileBarChart
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import NotificationDropdown, { Notification } from "@/components/NotificationDropdown";
@@ -231,6 +232,9 @@ const Dashboard = () => {
             <SidebarLink icon={<TrendingUp />} label={t("dashboard.progress")} />
             <Link to="/certificates">
               <SidebarLink icon={<Award />} label={t("dashboard.certificates")} />
+            </Link>
+            <Link to="/student-report">
+              <SidebarLink icon={<FileBarChart />} label={t("dashboard.performanceReport")} />
             </Link>
             <SidebarLink icon={<Calendar />} label={t("dashboard.schedule")} />
             <SidebarLink icon={<User />} label={t("dashboard.profile")} />
