@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import {
   ArrowLeft,
   ArrowRight,
@@ -15,7 +17,10 @@ import {
   XCircle,
   BarChart3,
   Calendar,
+  Download,
+  Loader2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -71,6 +76,54 @@ const StudentReport = () => {
   const { t, isRTL, language } = useLanguage();
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
   const [timeRange, setTimeRange] = useState("all");
+  const [isExporting, setIsExporting] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  const handleExportPDF = useCallback(async () => {
+    if (!reportRef.current) return;
+    
+    setIsExporting(true);
+    try {
+      const element = reportRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+      
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      const fileName = language === 'ar' ? 'تقرير_الأداء.pdf' : 'performance_report.pdf';
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [language]);
 
   // Sample quiz data
   const quizHistory = [
@@ -261,17 +314,34 @@ const StudentReport = () => {
                 {t("report.subtitle")}
               </p>
             </div>
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={t("report.selectPeriod")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("report.allTime")}</SelectItem>
-                <SelectItem value="month">{t("report.lastMonth")}</SelectItem>
-                <SelectItem value="week">{t("report.lastWeek")}</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className="flex items-center gap-2"
+              >
+                {isExporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                {t("report.exportPDF")}
+              </Button>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder={t("report.selectPeriod")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("report.allTime")}</SelectItem>
+                  <SelectItem value="month">{t("report.lastMonth")}</SelectItem>
+                  <SelectItem value="week">{t("report.lastWeek")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {/* Report Content for PDF Export */}
+          <div ref={reportRef}>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
@@ -568,6 +638,7 @@ const StudentReport = () => {
               </div>
             </CardContent>
           </Card>
+          </div>
         </div>
       </main>
       <Footer />
