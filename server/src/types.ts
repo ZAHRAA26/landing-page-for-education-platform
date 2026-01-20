@@ -4,8 +4,10 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  password_hash: string;
+  password_hash: string | null;
   role: "student" | "instructor" | "admin" | string;
+  oauth_provider: string | null;
+  oauth_id: string | null;
   created_at: string;
 }
 

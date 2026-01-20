@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import OAuthCallback from "./pages/OAuthCallback";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import Dashboard from "./pages/Dashboard";
@@ -53,6 +54,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/auth/oauth/success" element={<OAuthCallback />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/courses/:id" element={<CourseDetail />} />
                 <Route
